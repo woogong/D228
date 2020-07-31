@@ -39,7 +39,17 @@ var database = {
 
                     if (callback)
                     {
-                        callback(result);
+                        var str = JSON.stringify(result);
+                        var json = JSON.parse(str);
+
+                        if (json.length == 1)
+                        {
+                            callback(json[0]);
+                        }
+                        else
+                        {
+                            callback(json);
+                        }
                     }
                 });
 

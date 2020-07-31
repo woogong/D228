@@ -11,6 +11,7 @@ CREATE TABLE membership
 	address			VARCHAR(255)				COMMENT '주소',
 	phone_home		VARCHAR(30)					COMMENT '집전화번호',
 	phone_mobile	VARCHAR(30)					COMMENT '휴대전화번호',
+	email			VARCHAR(100)				COMMENT '이메일',
 	job				VARCHAR(255)				COMMENT '소속(직업)',
 	introducer_seq	INT							COMMENT '추천인',
 	note			VARCHAR(1000)				COMMENT '비고',

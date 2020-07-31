@@ -18,23 +18,84 @@ var api = {
         sql += "    	 GROUP BY member_seq  ";
         sql += "      ) AS b ON a.member_seq = b.member_seq  ";
         sql += " ORDER BY a.member_seq  ";
-        
-
-/*
-
-SELECT a.*, b.year
-  FROM membership AS a
-  LEFT JOIN (
-	SELECT member_id, MAX(year) AS year
-	  FROM membership_fee
-	 GROUP BY member_id
-  ) AS b ON a.member_id = b.member_id;
-
-*/
-
 
         return sql;
     },
+
+    getSimpleMemberList: function(params, callback)
+    {
+      var sql = "";
+      sql += "SELECT a.member_seq, a.member_id, a.name, a.phone_mobile  ";
+      sql += "  FROM membership AS a ";
+      sql += " ORDER BY a.name  ";
+
+      return sql;
+    },
+
+    registerMember: function(params, callback)
+    {
+      var sql = "";
+      sql += "INSERT INTO membership  ";
+      sql += "  (member_id, ";
+      sql += "   seq, ";
+      sql += "   name, ";
+      sql += "   birthday, ";
+      sql += "   register_date, ";
+      sql += "   zipcode, ";
+      sql += "   address, ";
+      sql += "   phone_home, ";
+      sql += "   phone_mobile, ";
+      sql += "   email, ";
+      sql += "   job, ";
+      sql += "   introducer_seq, ";
+      sql += "   note, ";
+      sql += "   gender, ";
+      sql += "   school, ";
+      sql += "   grade, ";
+      sql += "   class1, ";
+      sql += "   member_type) ";
+      sql += "VALUES  ";
+      sql += "  ('" + params.memberId + "', ";
+      sql += "   " + '0' + ", ";
+      sql += "   '" + params.name + "', ";
+      sql += "   " + (params.birthday != "" ? "'" + params.birthday + "'" : "null") + ", ";
+      sql += "   '" + params.registerDate + "', ";
+      sql += "   '" + params.zipcode + "', ";
+      sql += "   '" + params.address + "', ";
+      sql += "   '" + params.phoneHome + "', ";
+      sql += "   '" + params.phoneMobile + "', ";
+      sql += "   '" + params.email + "', ";
+      sql += "   '" + params.job + "', ";
+      sql += "   " + (params.introducer != 0 ? "'" + params.introducer + "'" : "null") + ", ";
+      sql += "   '" + params.note + "', ";
+      sql += "   '" + (params.gender ? params.gender : "") + "', ";
+      sql += "   '" + (params.school ? params.school : "") + "', ";
+      sql += "   '" + (params.grade ? params.grade : "") + "', ";
+      sql += "   '" + (params.class1 ? params.class1 : "") + "', ";
+      sql += "   '" + params.memberType + "') ";
+      
+      return sql;
+    },
+
+    getNewMemberId: function(params, callback)
+    {
+      var sql = "";
+      sql += "SELECT MAX(member_id) AS max_id ";
+      sql += "  FROM membership ";
+
+      return sql;
+    },
+
+    getCountOfMembers: function(params, callback)
+    {
+      var sql = "";
+      sql += "SELECT COUNT(*) AS countMembers  ";
+      sql += "  FROM membership AS a ";
+      sql += " where a.member_id = '" + params.value + "' ";
+
+      return sql;
+    },
+
 
     dummy: null
 };

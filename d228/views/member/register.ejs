@@ -8,19 +8,10 @@
 
     </style>
 
-    <script>
+    <script src="/js/jquery.form.min.js"></script>
+    <script src="/js/woogong/form_checker.js"></script>
+    <script src="/js/page/member_register.js"></script>
 
-        $(document).ready(function() {
-
-            $("#txt_birthday").dateInput();
-            $("#txt_register_date").dateInput({
-                defaultDate: new Date()
-            });
-
-        });
-
-    </script>
- 
 </head>
 
 <body>
@@ -32,105 +23,110 @@
             <h3 class="panel-title">회원등록</h3>
         </div>
 
-        <form>
+        <form id="the_form" method="post" action="/rest/member/register.do">
             <div class="form-group row">
                 <label for="txt_id" class="col-sm-2 col-form-label">ID</label>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control" id="txt_id">
+                    <input type="text" name="memberId" class="form-control user_input_check" id="txt_id" data-regex="^\d{6}$" data-guide-message="숫자 6자리를 입력하세요." data-regex-message="숫자 6자리를 입력하세요." data-rule-api="/rest/member/member_id_unique.do" data-rule-api-message="중복된 아이디입니다." autocomplete="off">
                 </div>
-                <button class="btn btn-outline-primary btn-sm">ID 만들기</button>
-                <div class="col-sm-4" style="text-align: center; padding-top: 5px;">
-                    <small id="help_id" class="form-text text-danger" style="display: none;">회원아이디를 입력하세요.</small>
-                </div>
+                <button class="btn btn-outline-primary btn-sm col-sm-1" id="btn_id_make">ID 만들기</button>   
+                
             </div>
             <div class="form-group row">
                 <label for="txt_name" class="col-sm-2 col-form-label">성명</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="txt_name">
-                </div>
-                <div class="col-sm-4" style="text-align: center; padding-top: 5px;">
-                    <small id="help_name" class="form-text text-danger" style="display: none;">성명을 입력하세요.</small>
+                    <input type="text" name="name" class="form-control user_input_check" data-rule="required" id="txt_name" autocomplete="off">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="txt_birthday" class="col-sm-2 col-form-label">생년월일</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="txt_birthday">
-                </div>
-                <div class="col-sm-4" style="text-align: center; padding-top: 5px;">
-                    <small id="help_birthday" class="form-text text-muted">YYYY-MM-DD 형식으로 입력하세요.</small>
+                    <input type="text" name="birthday" class="form-control user_input_check" id="txt_birthday" data-rule="yyyy-mm-dd" data-guide-message="YYYY-MM-DD 형식으로 입력하세요." autocomplete="off">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="txt_register_date" class="col-sm-2 col-form-label">가입일</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="txt_register_date">
-                </div>
-                <div class="col-sm-4" style="text-align: center; padding-top: 5px;">
-                    <small id="help_birthday" class="form-text text-muted">YYYY-MM-DD 형식으로 입력하세요.</small>
+                    <input type="text" name="registerDate" class="form-control user_input_check" id="txt_register_date" data-rule="required yyyy-mm-dd" data-guide-message="YYYY-MM-DD 형식으로 입력하세요." autocomplete="off">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="txt_zipcode" class="col-sm-2 col-form-label">우편번호</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="txt_zipcode">
+                    <input type="text" name="zipcode" class="form-control user_input_check" id="txt_zipcode" data-rule="zipcode" autocomplete="off">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="txt_address" class="col-sm-2 col-form-label">주소</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="txt_address">
+                    <input type="text" name="address" class="form-control user_input_check" id="txt_address">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="txt_phone_home" class="col-sm-2 col-form-label">전화번호(집)</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="txt_phone_home">
+                    <input type="text" name="phoneHome" class="form-control user_input_check" id="txt_phone_home" data-rule="phoneNumber" data-guide-message="'-'을 포함한 숫자를 입력하세요." autocomplete="off">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="txt_phone_mobile" class="col-sm-2 col-form-label">휴대전화</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="txt_phone_mobile">
+                    <input type="text" name="phoneMobile" class="form-control user_input_check" id="txt_phone_mobile" data-rule="mobilePhoneNumber"data-guide-message="'-'을 포함한 숫자를 입력하세요."  autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="txt_email" class="col-sm-2 col-form-label">이메일</label>
+                <div class="col-sm-3">
+                    <input type="text" name="email" class="form-control user_input_check" id="txt_email" data-rule="email" autocomplete="off">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="cmb_introducer" class="col-sm-2 col-form-label">추천인</label>
                 <div class="col-sm-3">
-                    <select class="form-control" id="cmb_introducer">
+                    <select name="introducer" class="form-control user_input_check" id="cmb_introducer">
                         <option></option>
                     </select>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" class="form-control" id="txt_introducer">
+                    <input type="text" class="form-control" id="txt_introducer" placeholder="검색">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="txt_job" class="col-sm-2 col-form-label">직업(소속)</label>
+                <div class="col-sm-3">
+                    <input type="text" name="job" class="form-control user_input_check" id="txt_job" autocomplete="off">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="txt_note" class="col-sm-2 col-form-label">비고</label>
                 <div class="col-sm-10">
-                    <textarea class="form-control" id="txt_note"></textarea>
+                    <textarea name="note" class="form-control user_input_check" id="txt_note"></textarea>
                 </div>
             </div>
             <div class="form-group row">
                 <legend class="col-form-label col-sm-2 pt-0">회원종류</legend>
                 <div class="col-sm-10">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="type" id="rd_type_m" value="M">
+                        <input class="form-check-input" type="radio" name="memberType" id="rd_type_m" value="M" checked="checked">
                         <label class="form-check-label" for="rd_type_m">일반회원</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="type" id="rd_type_s" value="S">
+                        <input class="form-check-input" type="radio" name="memberType" id="rd_type_s" value="S">
                         <label class="form-check-label" for="rd_type_s">학생회원</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="type" id="rd_type_p" value="P">
+                        <input class="form-check-input" type="radio" name="memberType" id="rd_type_p" value="P">
                         <label class="form-check-label" for="rd_type_p">후원회원</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="memberType" id="rd_type_f" value="F">
+                        <label class="form-check-label" for="rd_type_p">가족회원</label>
                     </div>
                 </div>
             </div>
             <div class="form-group row">
-                <div class="col-sm-10">
-                    <button type="submit" class="btn btn-primary">등록</button>
+                <div class="col-sm-12" style="text-align: center;">
+                    <button id="btn_save" type="submit" class="btn btn-primary">등록</button>
                 </div>
             </div>
         </form>
