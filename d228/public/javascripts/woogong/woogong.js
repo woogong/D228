@@ -421,3 +421,10 @@
 	{
 		return str.split(searchStr).join(replaceStr);
 	}
+
+	/* query string을 parsing 해서 json 으로 되돌림 */
+	function getUrlParams() {
+		var params = {};
+		window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (str, key, value) { params[key] = value; });
+		return params;
+	};

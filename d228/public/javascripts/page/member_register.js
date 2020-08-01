@@ -6,25 +6,6 @@ $(document).ready(function() {
     $("#cmb_introducer").makeIntroducerCombo({searchInput: $("#txt_introducer")});
 
     $("#the_form").checkInputValidation({
-        /* ajaxValidations: [
-            {
-                element: "[name='memberId']",
-                isValid: function() {
-                    var result = $.ajax({
-                        method: "POST",
-                        url: "/rest/member/member_id_exists.do",
-                        data: {memberId: this.form.find("[name='memberId']").val()},
-                        async: false,
-                        dataType: "json"
-                    }).responseText;
-
-                    result = JSON.parse(result);
-
-                    return (result.exists ? false : true);
-                },
-                failMessage: "중복된 아이디입니다."
-            }
-        ] */
     });
 
 
@@ -33,13 +14,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $("#btn_save").on("click", function() {
-        save();
-    });
-
-    $("#btn_id_make").on("click", function() {
-        makeId();
-    });
+    setEventHandlers();
 });
 
 function initializeDateInput()
@@ -48,6 +23,22 @@ function initializeDateInput()
     $("#txt_register_date").dateInput({
         defaultDate: new Date()
     });
+}
+
+function setEventHandlers()
+{
+    $("#btn_save").on("click", function() {
+        save();
+    });
+
+    $("#btn_id_make").on("click", function() {
+        makeId();
+    });
+
+    $("[name=memberType]").on("click", function() {
+        applyMemberType($(this).val());
+    });
+    $("#rd_type_m").click();
 }
 
 function save()
@@ -84,6 +75,18 @@ function makeId()
     $.get("/rest/member/new_id.do", null, function(response) {
         $("[name='memberId']").val(response);
     });
+}
+
+function applyMemberType(type)
+{
+    if ("S" == type)
+    {
+        $("#the_form .student").show();
+    }
+    else
+    {
+        $("#the_form .student").hide();
+    }
 }
 
 

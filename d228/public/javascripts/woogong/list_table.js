@@ -12,7 +12,7 @@
         return this.each(function() {
             if ("make" == job)
             {
-                listManager.setLayer($(this));
+                listManager.setLayer($(this), settings);
                 listManager.makeTable(settings.columns);
                 listManager.showList(settings.list);
             }
@@ -26,10 +26,11 @@
     var listManager = {
         sortAscendent: false,
 
-        setLayer: function(layer)
+        setLayer: function(layer, settings)
         {
             this.layer = layer;
             this.layer.empty();
+            this.settings = settings;
         },
 
         makeTable: function(columns)
@@ -101,6 +102,16 @@
             for (var i in this.columns)
             {
                 this.addColumnData(tr, this.columns[i], data);
+            }
+
+            var this1 = this;
+            if (this.settings.rowLink && this.settings.keyField)
+            {
+                tr.css("cursor", "pointer");
+
+                tr.on("click", function() {
+                    location.href = this1.settings.rowLink + "?" + this1.settings.keyField + "=" + data[this1.settings.keyField];
+                });
             }
         },
 

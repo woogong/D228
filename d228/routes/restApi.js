@@ -14,6 +14,12 @@ router.get('/member/list_simple.do', function (req, res, next) {
   });
 });
 
+router.post('/member/read.do', function (req, res, next) {
+  memberService.execute("getMember", req.body, function (result) {
+    res.json(result);
+  });
+});
+
 router.post('/member/register.do', function (req, res, next) {
   memberService.execute("registerMember", req.body, function (result) {
     res.json({'resultCode': "Success"});

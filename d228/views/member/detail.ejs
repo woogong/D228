@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include ("../include/declare.ejs") %>
-    <script>
-      let payPopup = false;
-      const pay = () => {
-        if (!payPopup) {
-          const html = `<div
+
+<head>
+	<%- include ("../include/declare.ejs") %>
+
+	<script src="/js/woogong/list_table.js"></script>
+    <script src="/js/page/member_detail.js"></script>
+
+	<script>
+		let payPopup = false;
+		const pay = () => {
+			if (!payPopup) {
+				const html = `<div
             style="width: 500px; background-color: lightgray; padding: 2rem;"
           >
             <div style="display: flex; justify-content: space-between;">
@@ -25,172 +30,316 @@
               <button class="btn btn-primary">저장</button>
             </div>
           </div>`;
-          $("#pay").append(html);
-          payPopup = true;
-        }
-      };
-    </script>
-    <style>
-      span {
-        text-align: left;
-        margin-top: 1.2rem;
-        color: gray;
-      }
-      .left {
-        width: 610px;
-        display: flex;
-      }
-      td {
-        width: 150px;
-        padding: 0.8rem;
-        font-size: 15px;
-      }
-      
-    </style>
-  </head>
-  <body>
-    <%- include ("../include/header.ejs") %>
-    <div style="display: flex; height: 550px;">
-      <div class="left" style="padding-left: 5rem;">
-        <div style="display: flex; flex-direction: column; text-align: left;">
-          <div
-            style="display: flex; width: 400px; justify-content: space-between;"
-          >
-            <span>ID</span>
-            <span>202015</span>
-          </div>
-          <div
-            style="display: flex; width: 400px; justify-content: space-between;"
-          >
-            <span>성명</span>
-            <span>홍길동</span>
-          </div>
-          <div
-            style="display: flex; width: 400px; justify-content: space-between;"
-          >
-            <span>생년월일</span>
-            <span>1945. 3. 22</span>
-          </div>
-          <div
-            style="display: flex; width: 400px; justify-content: space-between;"
-          >
-            <span>가입일</span>
-            <span>2017. 11. 23</span>
-          </div>
-          <div
-            style="display: flex; width: 400px; justify-content: space-between;"
-          >
-            <span>우편번호</span>
-            <span>72492</span>
-          </div>
-          <div
-            style="display: flex; width: 400px; justify-content: space-between;"
-          >
-            <span>주소</span>
-            <span>대구광역시 동구 </span>
-          </div>
-          <div
-            style="display: flex; width: 400px; justify-content: space-between;"
-          >
-            <span>전화번호</span>
-            <span>053-000-0000</span>
-          </div>
-          <div
-            style="display: flex; width: 400px; justify-content: space-between;"
-          >
-            <span>휴대전화</span>
-            <span>010-0000-1234</span>
-          </div>
-          <div
-            style="display: flex; width: 400px; justify-content: space-between;"
-          >
-            <span>추천인</span>
-            <span>없음</span>
-          </div>
-          <div
-            style="display: flex; width: 400px; justify-content: space-between;"
-          >
-            <span>회원종류</span>
-            <span>일반회원</span>
-          </div>
-        </div>
-      </div>
-      <div
-        class="right"
-        style="
+				$("#pay").append(html);
+				payPopup = true;
+			}
+		};
+	</script>
+	<style>
+		span {
+			text-align: left;
+			margin-top: 1.2rem;
+			color: gray;
+		}
+
+		.left {
+			width: 610px;
+			display: flex;
+		}
+
+		td {
+			width: 150px;
+			padding: 0.8rem;
+			font-size: 15px;
+		}
+
+		dl {
+			margin-bottom: 0.1rem;
+			padding-bottom: 0;
+		}
+
+		dd {
+			margin-bottom: 0.2rem;
+		}
+
+	</style>
+
+	
+</head>
+
+<body>
+
+	<%- include ("../include/header.ejs") %>
+
+    <div class="container">
+        <div class="panel-heading row ">
+            <h3 class="panel-title col-4">회원상세정보</h3>
+			<div class="col-8" style="text-align: right; margin-top: 0.5rem;">
+				<button class="btn btn-primary btn-sm">정보변경</button>
+				<button class="btn btn-primary btn-sm">회비납부</button>
+				<button class="btn btn-secondary btn-sm">삭제</button>
+			</div>
+		</div>
+
+		<dl class="row"  style="margin-top: 1rem; border-top: 1px solid #DDD; padding-top: 0.5rem;">
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">회원종류</dt>
+					<dd class="col-sm-8 detail_data" data-field="member_type" data-format="formatMemberType"></dd>
+				</dl>
+			</dd>
+		</dl>
+
+		<dl class="row">
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">회원아이디</dt>
+					<dd class="col-sm-8 detail_data" data-field="member_id"></dd>
+				</dl>
+			</dd>
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">성명</dt>
+					<dd class="col-sm-8 detail_data" data-field="name"></dd>
+				</dl>
+			</dd>
+		</dl>
+
+		<dl class="row">
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">생년월일</dt>
+					<dd class="col-sm-8 detail_data" data-field="birthday" data-format="formatDate"></dd>
+				</dl>
+			</dd>
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">가입일</dt>
+					<dd class="col-sm-8 detail_data" data-field="register_date" data-format="formatDate"></dd>
+				</dl>
+			</dd>
+		</dl>
+
+		<dl class="row">
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">우편번호</dt>
+					<dd class="col-sm-8 detail_data" data-field="zipcode"></dd>
+				</dl>
+			</dd>
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">직업(소속)</dt>
+					<dd class="col-sm-8 detail_data" data-field="job"></dd>
+				</dl>
+			</dd>
+		</dl>
+
+		<dl class="row">
+			<dd class="col-sm-12">
+				<dl class="row">
+					<dt class="col-sm-2">주소</dt>
+					<dd class="col-sm-10 detail_data" data-field="address"></dd>
+				</dl>
+			</dd>
+		</dl>
+
+		<dl class="row">
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">전화번호</dt>
+					<dd class="col-sm-8 detail_data" data-field="phone_home"></dd>
+				</dl>
+			</dd>
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">휴대전화번호</dt>
+					<dd class="col-sm-8 detail_data" data-field="phone_mobile"></dd>
+				</dl>
+			</dd>
+		</dl>
+
+		<dl class="row">
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">이메일</dt>
+					<dd class="col-sm-8 detail_data" data-field="email"></dd>
+				</dl>
+			</dd>
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">추천인</dt>
+					<dd class="col-sm-8 detail_data" data-field="introducer" data-format="formatIntroducer"></dd>
+				</dl>
+			</dd>
+		</dl>
+
+		<dl class="row student">
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">성별</dt>
+					<dd class="col-sm-8 detail_data" data-field="gender" data-format="formatGender"></dd>
+				</dl>
+			</dd>
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">학교</dt>
+					<dd class="col-sm-8 detail_data" data-field="school"></dd>
+				</dl>
+			</dd>
+		</dl>
+
+		<dl class="row student">
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">학년</dt>
+					<dd class="col-sm-8 detail_data" data-field="grade"></dd>
+				</dl>
+			</dd>
+			<dd class="col-sm-6">
+				<dl class="row">
+					<dt class="col-sm-4">학반</dt>
+					<dd class="col-sm-8 detail_data" data-field="class1"></dd>
+				</dl>
+			</dd>
+		</dl>
+
+		<dl class="row">
+			<dd class="col-sm-12">
+				<dl class="row">
+					<dt class="col-sm-2">비고</dt>
+					<dd class="col-sm-10 detail_data" data-field="note" data-format="formatLineBreak"></dd>
+				</dl>
+			</dd>
+		</dl>
+
+		<div class="panel-heading row" style="margin-top: 10px; border-top: 1px solid #DDD; padding-top: 5px;">
+			<h5 class="panel-title col-4">회비 납부 현황</h5>
+		</div>
+
+		<div class="table-responsive" id="div_membership_fee">
+
+		</div>
+
+	</div>
+
+
+	<hr>
+
+
+
+	<div style="display: flex; height: 550px;">
+		<div class="left" style="padding-left: 5rem;">
+			<div style="display: flex; flex-direction: column; text-align: left;">
+				<div style="display: flex; width: 400px; justify-content: space-between;">
+					<span>ID</span>
+					<span>202015</span>
+				</div>
+				<div style="display: flex; width: 400px; justify-content: space-between;">
+					<span>성명</span>
+					<span>홍길동</span>
+				</div>
+				<div style="display: flex; width: 400px; justify-content: space-between;">
+					<span>생년월일</span>
+					<span>1945. 3. 22</span>
+				</div>
+				<div style="display: flex; width: 400px; justify-content: space-between;">
+					<span>가입일</span>
+					<span>2017. 11. 23</span>
+				</div>
+				<div style="display: flex; width: 400px; justify-content: space-between;">
+					<span>우편번호</span>
+					<span>72492</span>
+				</div>
+				<div style="display: flex; width: 400px; justify-content: space-between;">
+					<span>주소</span>
+					<span>대구광역시 동구 </span>
+				</div>
+				<div style="display: flex; width: 400px; justify-content: space-between;">
+					<span>전화번호</span>
+					<span>053-000-0000</span>
+				</div>
+				<div style="display: flex; width: 400px; justify-content: space-between;">
+					<span>휴대전화</span>
+					<span>010-0000-1234</span>
+				</div>
+				<div style="display: flex; width: 400px; justify-content: space-between;">
+					<span>추천인</span>
+					<span>없음</span>
+				</div>
+				<div style="display: flex; width: 400px; justify-content: space-between;">
+					<span>회원종류</span>
+					<span>일반회원</span>
+				</div>
+			</div>
+		</div>
+		<div class="right" style="
           display: flex;
           flex-direction: column;
           width: 500px;
           justify-content: space-between;
-        "
-      >
-        <div style="border: 1px solid black; float: left; padding: 20px 10px;">
-          <table>
-            <thead style="text-align: left;">
-              회비 납부 현황
-            </thead>
-            <tr>
-              <td>2020년</td>
-              <td>2020. 4. 12</td>
-              <td>30,000원</td>
-              <td>
-                <button type="button" style="background-color: white; border: 0px;">
-                  <img src="/images/delete.png" style="width: 25px;height: 25px;">
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>2019년</td>
-              <td>납부안함</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>2018년</td>
-              <td>2018. 11. 22</td>
-              <td>30,000원</td>
-              <td>
-                <button type="button" style="background-color: white; border: 0px;">
-                  <img src="/images/delete.png" style="width: 25px;height: 25px;">
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>2017년</td>
-              <td>2017. 8. 15</td>
-              <td>30,000원</td>
-              <td>
-                <button type="button" style="background-color: white; border: 0px;">
-                  <img src="/images/delete.png" style="width: 25px;height: 25px;">
-                </button>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div id="pay"></div>
-      </div>
-    </div>
-    <div
-      style="
+        ">
+			<div style="border: 1px solid black; float: left; padding: 20px 10px;">
+				<table>
+					<thead style="text-align: left;">
+						회비 납부 현황
+					</thead>
+					<tr>
+						<td>2020년</td>
+						<td>2020. 4. 12</td>
+						<td>30,000원</td>
+						<td>
+							<button type="button" style="background-color: white; border: 0px;">
+								<img src="/images/delete.png" style="width: 25px;height: 25px;">
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td>2019년</td>
+						<td>납부안함</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>2018년</td>
+						<td>2018. 11. 22</td>
+						<td>30,000원</td>
+						<td>
+							<button type="button" style="background-color: white; border: 0px;">
+								<img src="/images/delete.png" style="width: 25px;height: 25px;">
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td>2017년</td>
+						<td>2017. 8. 15</td>
+						<td>30,000원</td>
+						<td>
+							<button type="button" style="background-color: white; border: 0px;">
+								<img src="/images/delete.png" style="width: 25px;height: 25px;">
+							</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="pay"></div>
+		</div>
+	</div>
+	<div style="
         display: flex;
         width: 800px;
         justify-content: space-between;
         margin-top: 5rem;
         padding-left: 5rem;
-      "
-    >
-      <button type="button" class="btn btn-primary" style="width: 8rem;">
-        정보변경
-      </button>
-      <button
-        onclick="pay()"
-        type="button"
-        class="btn btn-primary"
-        style="width: 8rem;"
-      >
-        회비 납부
-      </button>
-    </div>
-    <%- include ("../include/footer.ejs") %>
-  </body>
+      ">
+		<button type="button" class="btn btn-primary" style="width: 8rem;">
+			정보변경
+		</button>
+		<button onclick="pay()" type="button" class="btn btn-primary" style="width: 8rem;">
+			회비 납부
+		</button>
+	</div>
+	<%- include ("../include/footer.ejs") %>
+</body>
+
 </html>

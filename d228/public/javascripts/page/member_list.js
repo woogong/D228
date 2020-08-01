@@ -40,8 +40,10 @@ var memberListManager = {
                 {name: "회비납부", field: "fee_year", align: "center", width: "100px", fnFormat: memberListManager.formatMembershipFee},
                 {name: "생년월일", field: "birthday", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
                 {name: "가입일", field: "register_date", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
-                {name: "소속(직업)", field: "job", width: "*"}
+                {name: "이메일", field: "email", width: "120px"}
             ],
+            keyField: "member_seq",
+            rowLink: "detail"
         };
 
         $("#div_member_list").list("make", params);
