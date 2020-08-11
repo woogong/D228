@@ -2,9 +2,18 @@ var database = require("./database");
 
 var api = {
 
-	execute: function(job, params, callback) {
-		var query = eval("this." + job)(params);
-		database.executeQuery(query, callback);
+	execute: function(job, params, callback, callbackFail) {
+		try
+		{
+			var query = eval("this." + job)(params);
+			console.log(query);
+			database.executeQuery(query, callback, callbackFail);
+		}
+		catch (exception)
+		{
+			console.log(exception);
+			callbackFail(exception);
+		}
 	},
 
 	getMemberList: function(params, callback) {
@@ -23,7 +32,16 @@ var api = {
 
 	getSimpleMemberList: function(params, callback) {
 		var sql = "";
-		sql += "SELECT a.member_seq, a.member_id, a.name, a.phone_mobile  ";
+		sql += "SELECT ";
+		sql += "	a.member_seq, "; 
+		sql += "	a.member_id, "; 
+		sql += "	a.name, "; 
+		sql += "	a.phone_mobile, "; 
+		sql += "	a.phone_home, "; 
+		sql += "	a.birthday, "; 
+		sql += "	a.zipcode, "; 
+		sql += "	a.address, "; 
+		sql += "	a.email "; 
 		sql += "  FROM membership AS a ";
 		sql += " ORDER BY a.name  ";
 
@@ -84,6 +102,41 @@ var api = {
 		return sql;
 	},
 
+	updateMember: function(params, callback)
+	{
+		var sql = "";
+		sql += "UPDATE membership SET ";
+		sql += "	member_id = '" + params.memberId + "', ";
+		sql += "	name = '" + params.name + "', ";
+		sql += "	birthday = '" + params.birthday + "', ";
+		sql += "	register_date = '" + params.registerDate + "', ";
+		sql += "	zipcode = '" + params.zipcode + "', ";
+		sql += "	address = '" + params.address + "', ";
+		sql += "	phone_home = '" + params.phoneHome + "', ";
+		sql += "	phone_mobile = '" + params.phoneMobile + "', ";
+		sql += "	email = '" + params.email + "', ";
+		sql += "	job = '" + params.job + "', ";
+		sql += "	introducer_seq = '" + params.introducer + "', ";
+		sql += "	note = '" + params.note + "', ";
+		sql += "	gender = '" + params.gender + "', ";
+		sql += "	school = '" + params.school + "', ";
+		sql += "	grade = '" + params.grade + "', ";
+		sql += "	class1 = '" + params.class1 + "', ";
+		sql += "	member_type = '" + params.memberType + "' ";
+		sql += " WHERE member_seq = " + params.memberSeq + " ";
+
+		return sql;
+	},
+
+	removeMember: function(params, callback)
+	{
+		var sql = "";
+		sql += "DELETE FROM membership ";
+		sql += " WHERE member_seq = " + params.memberSeq + " ";
+
+		return sql;
+	},
+
 	getNewMemberId: function(params, callback) {
 		var sql = "";
 		sql += "SELECT MAX(member_id) AS max_id ";
@@ -101,6 +154,212 @@ var api = {
 		return sql;
 	},
 
+	getMembershipFeeList: function(params, callback) {
+		var sql = "";
+		sql += "SELECT ";
+		sql += "	a.fee_seq, ";
+		sql += "	a.member_seq, ";
+		sql += "	a.pay_date, ";
+		sql += "	a.amount, ";
+		sql += "	a.year, ";
+		sql += "	a.type, ";
+		sql += "	a.note, ";
+		sql += "	b.name AS member_name, ";
+		sql += "	b.member_seq, ";
+		sql += "	b.member_id, ";
+		sql += "	b.member_type ";
+		sql += "  FROM membership_fee AS a ";
+		sql += "  JOIN membership AS b ON a.member_seq = b.member_seq ";
+		sql += " WHERE a.fee_seq > 0 "
+
+		if (params.memberSeq && params.memberSeq > 0)
+		{
+			sql += "   AND a.member_seq = " + params.memberSeq + " ";
+		}
+
+		sql += " ORDER BY a.fee_seq DESC ";
+
+		return sql;
+	},
+
+	registerMembershipFee: function(params, callback) {
+		var sql = "";
+		sql += "INSERT INTO membership_fee  ";
+		sql += "  (member_seq, ";
+		sql += "   pay_date, ";
+		sql += "   amount, ";
+		sql += "   year, ";
+		sql += "   type, ";
+		sql += "   note) ";
+		sql += "VALUES  ";
+		sql += "  ('" + params.memberSeq + "', ";
+		sql += "   '" + params.feeDate + "', ";
+		sql += "   '" + params.amount + "', ";
+		sql += "   '" + params.year + "', ";
+		sql += "   '" + params.type + "', ";
+		sql += "   '" + params.note + "') ";
+
+		return sql;
+	},
+
+	updateMembershipFee: function(params, callback) {
+		var sql = "";
+		sql += "UPDATE membership_fee SET ";
+		sql += "	pay_date = '" + params.feeDate + "', ";
+		sql += "	amount = " + params.amount + ", ";
+		sql += "	year = " + params.year + ", ";
+		sql += "	type = '" + params.type + "', ";
+		sql += "	note = '" + params.note + "' ";
+		sql += " WHERE fee_seq = " + params.feeSeq + " ";
+
+		return sql;
+	},
+
+	deleteMembershipFee: function(params, callback) {
+		var sql = "";
+		sql += "DELETE FROM membership_fee ";
+		sql += " WHERE fee_seq = " + params.feeSeq + " ";
+
+		return sql;
+	},
+
+	getMeritList: function(params, callback) {
+		var sql = "";
+		sql += "SELECT ";
+		sql += "	a.merit_seq, ";
+		sql += "	a.merit_id, ";
+		sql += "	a.member_seq, ";
+		sql += "	a.name, ";
+		sql += "	a.birthday, ";
+		sql += "	a.school, ";
+		sql += "	a.graduate, ";
+		sql += "	a.register_date, ";
+		sql += "	a.phone_home, ";
+		sql += "	a.phone_mobile, ";
+		sql += "	a.note, ";
+		sql += "	b.member_id ";
+		sql += "  FROM merit1 AS a ";
+		sql += "  LEFT JOIN membership AS b ON a.member_seq = b.member_seq ";
+		sql += " ORDER BY a.merit_seq  ";
+
+		return sql;
+	},
+
+	getMerit: function(params, callback) {
+		var sql = "";
+		sql += "SELECT ";
+		sql += "	a.merit_seq, ";
+		sql += "	a.merit_id, ";
+		sql += "	a.member_seq, ";
+		sql += "	a.name, ";
+		sql += "	a.birthday, ";
+		sql += "	a.school, ";
+		sql += "	a.graduate, ";
+		sql += "	a.register_date, ";
+		sql += "	a.phone_home, ";
+		sql += "	a.phone_mobile, ";
+		sql += "	a.zipcode, ";
+		sql += "	a.address, ";
+		sql += "	a.email, ";
+		sql += "	a.note, ";
+		sql += "	b.member_id ";
+		sql += "  FROM merit1 AS a ";
+		sql += "  LEFT JOIN membership AS b ON a.member_seq = b.member_seq ";
+		sql += " WHERE merit_seq = " + params.meritSeq + " ";
+
+		return sql;
+	},
+
+	registerMerit: function(params, callback) {
+		var sql = "";
+		sql += "INSERT INTO merit1  ";
+		sql += "  (merit_id, ";
+		sql += "   member_seq, ";
+		sql += "   name, ";
+		sql += "   birthday, ";
+		sql += "   school, ";
+		sql += "   graduate, ";
+		sql += "   zipcode, ";
+		sql += "   address, ";
+		sql += "   phone_home, ";
+		sql += "   phone_mobile, ";
+		sql += "   email, ";
+		sql += "   note, ";
+		sql += "   register_date) ";
+		sql += "VALUES  ";
+		sql += "  ('" + params.meritId + "', ";
+		sql += "   " + ((params.memberSeq != 0) ? params.memberSeq : null) + ", ";
+		sql += "   '" + params.name + "', ";
+		sql += "   " + (params.birthday != "" ? "'" + params.birthday + "'" : "null") + ", ";
+		sql += "   '" + params.school + "', ";
+		sql += "   '" + params.graduate + "', ";
+		sql += "   '" + params.zipcode + "', ";
+		sql += "   '" + params.address + "', ";
+		sql += "   '" + params.phoneHome + "', ";
+		sql += "   '" + params.phoneMobile + "', ";
+		sql += "   '" + params.email + "', ";
+		sql += "   '" + params.note + "', ";
+		sql += "   now()) ";
+
+		return sql;
+	},
+
+	updateMerit: function(params, callback)
+	{
+		var sql = "";
+		sql += "UPDATE merit1 SET ";
+		sql += "	member_seq = '" + params.memberSeq + "', ";
+		sql += "	merit_id = '" + params.meritId + "', ";
+		sql += "	name = '" + params.name + "', ";
+		sql += "	birthday = '" + params.birthday + "', ";
+		sql += "	zipcode = '" + params.zipcode + "', ";
+		sql += "	address = '" + params.address + "', ";
+		sql += "	phone_home = '" + params.phoneHome + "', ";
+		sql += "	phone_mobile = '" + params.phoneMobile + "', ";
+		sql += "	email = '" + params.email + "', ";
+		sql += "	note = '" + params.note + "', ";
+		sql += "	school = '" + params.school + "', ";
+		sql += "	graduate = '" + params.graduate + "' ";
+		sql += " WHERE merit_seq = " + params.meritSeq + " ";
+
+		return sql;
+	},
+
+	removeMerit: function(params, callback)
+	{
+		var sql = "";
+		sql += "DELETE FROM merit1 ";
+		sql += " WHERE merit_seq = " + params.meritSeq + " ";
+
+		return sql;
+	},
+
+	getCountOfMerits: function(params, callback) {
+		var sql = "";
+		sql += "SELECT COUNT(*) AS countMerits  ";
+		sql += "  FROM merit1 AS a ";
+		sql += " where a.merit_id = '" + params.value + "' ";
+
+		return sql;
+	},
+
+	getNewMeritId: function(params, callback) {
+		var sql = "";
+		sql += "SELECT MAX(merit_id) AS max_id ";
+		sql += "  FROM merit1 ";
+
+		return sql;
+	},
+
+
+	formatDate: function(value)
+	{
+		var date = new Date(value);
+		if (!isNaN(date.getTime()))
+		{
+			return date.format("yyyy-MM-dd");
+		}
+	},
 
 	dummy: null
 };

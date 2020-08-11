@@ -3,7 +3,7 @@ $(document).ready(function() {
 
     initializeDateInput();
     
-    $("#cmb_introducer").makeIntroducerCombo({searchInput: $("#txt_introducer")});
+    $("#cmb_member").makeMemberCombo({searchInput: $("#txt_member")});
 
     $("#the_form").checkInputValidation({
         errorLayerClasses: "col-sm-4",
@@ -22,9 +22,6 @@ $(document).ready(function() {
 function initializeDateInput()
 {
     $("#txt_birthday").dateInput();
-    $("#txt_register_date").dateInput({
-        defaultDate: new Date()
-    });
 }
 
 function setEventHandlers()
@@ -37,10 +34,14 @@ function setEventHandlers()
         makeId();
     });
 
-    $("[name=memberType]").on("click", function() {
-        applyMemberType($(this).val());
+    $("#cmb_member").on("change", function() {
+        var memberData = $("#cmb_member").getMemberData();
+        
+        if (memberData)
+        {
+            fillMemberData(memberData);
+        }
     });
-    $("#rd_type_m").click();
 }
 
 function save()
@@ -54,13 +55,13 @@ function save()
         success: function(response) {
             if (response.resultCode == "Success")
             {
-                $.alert("회원 등록", "회원을 등록하였습니다.", function() {
+                $.alert("유공자 등록", "유공자 정보를 등록하였습니다.", function() {
                     location.href = "list";
                 });
             }
             else
             {
-                $.alert("회원 등록", "저장에 실패하였습니다.");
+                $.alert("유공자 등록", "저장에 실패하였습니다. " + (response.failMessage ? response.failMessage : ""));
             }
         },
         
@@ -74,52 +75,60 @@ function save()
 
 function makeId()
 {
-    $.get("/rest/member/new_id.do", null, function(response) {
-        $("[name='memberId']").val(response);
+    $.get("/rest/merit/new_id.do", null, function(response) {
+        $("[name='meritId']").val(response);
     });
 }
 
-function applyMemberType(type)
+function fillMemberData(data)
 {
-    if ("S" == type)
-    {
-        $("#the_form .student").show();
-    }
-    else
-    {
-        $("#the_form .student").hide();
-    }
+    console.log("fillMemberData", data);
+
+    $("#the_form [name='name']").val(data.name);
+    $("#the_form [name='birthday']").val(data.birthday ? new Date(data.birthday).format("yyyy-MM-dd") : "");
+    $("#the_form [name='zipcode']").val(data.zipcode);
+    $("#the_form [name='address']").val(data.address);
+    $("#the_form [name='phoneHome']").val(data.phone_home);
+    $("#the_form [name='phoneMobile']").val(data.phone_mobile);
+    $("#the_form [name='email']").val(data.email);
 }
 
 
 (function($) {
 
-    $.fn.makeIntroducerCombo = function(settings) 
+    var memberComboManager = null;
+
+    $.fn.makeMemberCombo = function(settings) 
     {
         var defaultSettings = {};
         var option = $.extend({}, defaultSettings, settings || {});
 
         this.each(function() {
-            var introducerManager = new IntroducerManager($(this), option);
-            gIntroducerManagerArray.push(introducerManager);
+            memberComboManager = new MemberComboManager($(this), option);
+            gMemberComboManagerArray.push(memberComboManager);
         });
 
         readMemberList(function(list) {
             gMemberList = list;
-            for (var i in gIntroducerManagerArray)
+            for (var i in gMemberComboManagerArray)
             {
-                gIntroducerManagerArray[i].showMemberList();
+                gMemberComboManagerArray[i].showMemberList();
             }
         });
 
         return this;
     };
 
+    $.fn.getMemberData = function()
+    {
+       return memberComboManager.getMemberData();
+    };
+
 
     var gMemberList;
-    var gIntroducerManagerArray = [];
+    var gMemberComboManagerArray = [];
 
-    function IntroducerManager(combo, option) {
+    function MemberComboManager(combo, option) {
         this.combo = combo;
         this.option = option;
 
@@ -132,7 +141,7 @@ function applyMemberType(type)
         }
     }
 
-    IntroducerManager.prototype.applyFilter = function(query)
+    MemberComboManager.prototype.applyFilter = function(query)
     {
         if (query)
         {
@@ -153,7 +162,7 @@ function applyMemberType(type)
         }
     };
 
-    IntroducerManager.prototype.showMemberList = function(query) {
+    MemberComboManager.prototype.showMemberList = function(query) {
         var list = this.applyFilter(query);
 
         this.combo.empty();
@@ -165,7 +174,7 @@ function applyMemberType(type)
         }
     };
 
-    IntroducerManager.prototype.makeOption = function(data) {
+    MemberComboManager.prototype.makeOption = function(data) {
         var option = $("<option />");
         option.attr("value", data.member_seq);
 
@@ -173,6 +182,19 @@ function applyMemberType(type)
         option.html(str);
 
         this.combo.append(option);
+    };
+
+    MemberComboManager.prototype.getMemberData = function(seq) {
+        if (gMemberList)
+        {
+            for (var i in gMemberList)
+            {
+                if (gMemberList[i].member_seq == this.combo.val())
+                {
+                    return gMemberList[i];
+                }
+            }
+        }
     };
 
     function readMemberList(callback) 

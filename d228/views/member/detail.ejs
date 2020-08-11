@@ -4,7 +4,9 @@
 <head>
 	<%- include ("../include/declare.ejs") %>
 
+    <script src="/js/jquery.form.min.js"></script>
 	<script src="/js/woogong/list_table.js"></script>
+	<script src="/js/woogong/form_checker.js"></script>
     <script src="/js/page/member_detail.js"></script>
 
 	<script>
@@ -75,9 +77,9 @@
         <div class="panel-heading row ">
             <h3 class="panel-title col-4">회원상세정보</h3>
 			<div class="col-8" style="text-align: right; margin-top: 0.5rem;">
-				<button class="btn btn-primary btn-sm">정보변경</button>
-				<button class="btn btn-primary btn-sm">회비납부</button>
-				<button class="btn btn-secondary btn-sm">삭제</button>
+				<button class="btn btn-primary btn-sm" id="btn_update">정보변경</button>
+				<button class="btn btn-primary btn-sm" id="btn_membership_fee">회비납부</button>
+				<button class="btn btn-secondary btn-sm" id="btn_remove">삭제</button>
 			</div>
 		</div>
 
@@ -223,122 +225,60 @@
 
 	</div>
 
-
-	<hr>
-
-
-
-	<div style="display: flex; height: 550px;">
-		<div class="left" style="padding-left: 5rem;">
-			<div style="display: flex; flex-direction: column; text-align: left;">
-				<div style="display: flex; width: 400px; justify-content: space-between;">
-					<span>ID</span>
-					<span>202015</span>
+	<div class="modal fade bd-example-modal-sm" id="modal_register" tabindex="-1" role="dialog" aria-labelledby="modal_register_label" aria-hidden="true">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal_register_label">회비 납부 등록</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
-				<div style="display: flex; width: 400px; justify-content: space-between;">
-					<span>성명</span>
-					<span>홍길동</span>
+				<div class="modal-body">
+					<form id="form_register" method="post" action="/rest/member/memberhsip_fee_register.do" onsubmit="return false;">
+						<input type="hidden" name="memberSeq" value="">
+						<input type="hidden" name="feeSeq" value="">
+						<div class="form-group">
+							<label for="txt_date" class="col-form-label">입금일</label>
+							<input type="text" name="feeDate" class="form-control user_input_check" id="txt_date" data-rule="required" autocomplete="off">
+						</div>
+						<div class="form-group">
+							<label for="txt_amount" class="col-form-label">입금액</label>
+							<input type="text" name="amount" class="form-control user_input_check" id="txt_amount" data-rule="required integer" autocomplete="off">
+						</div>
+						<div class="form-group">
+							<label for="cmb_year" class="col-form-label">년도</label>
+							<select name="year" class="form-control user_input_check" id="cmb_year">
+								<option value="2019">2019년</option>
+								<option value="2020" selected="selected">2020년</option>
+								<option value="2021">2021년</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="txt_type" class="col-form-label">납부 방법</label>
+							<input type="text" name="type" class="form-control user_input_check" id="txt_type" autocomplete="off">
+						</div>
+						<div class="form-group">
+							<label for="txt_note" class="col-form-label">비고</label>
+							<textarea name="note" class="form-control user_input_check" id="txt_note" autocomplete="off"></textarea>
+						</div>
+					</form>
 				</div>
-				<div style="display: flex; width: 400px; justify-content: space-between;">
-					<span>생년월일</span>
-					<span>1945. 3. 22</span>
-				</div>
-				<div style="display: flex; width: 400px; justify-content: space-between;">
-					<span>가입일</span>
-					<span>2017. 11. 23</span>
-				</div>
-				<div style="display: flex; width: 400px; justify-content: space-between;">
-					<span>우편번호</span>
-					<span>72492</span>
-				</div>
-				<div style="display: flex; width: 400px; justify-content: space-between;">
-					<span>주소</span>
-					<span>대구광역시 동구 </span>
-				</div>
-				<div style="display: flex; width: 400px; justify-content: space-between;">
-					<span>전화번호</span>
-					<span>053-000-0000</span>
-				</div>
-				<div style="display: flex; width: 400px; justify-content: space-between;">
-					<span>휴대전화</span>
-					<span>010-0000-1234</span>
-				</div>
-				<div style="display: flex; width: 400px; justify-content: space-between;">
-					<span>추천인</span>
-					<span>없음</span>
-				</div>
-				<div style="display: flex; width: 400px; justify-content: space-between;">
-					<span>회원종류</span>
-					<span>일반회원</span>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+					<button type="button" class="btn btn-primary btn_save">저장</button>
 				</div>
 			</div>
 		</div>
-		<div class="right" style="
-          display: flex;
-          flex-direction: column;
-          width: 500px;
-          justify-content: space-between;
-        ">
-			<div style="border: 1px solid black; float: left; padding: 20px 10px;">
-				<table>
-					<thead style="text-align: left;">
-						회비 납부 현황
-					</thead>
-					<tr>
-						<td>2020년</td>
-						<td>2020. 4. 12</td>
-						<td>30,000원</td>
-						<td>
-							<button type="button" style="background-color: white; border: 0px;">
-								<img src="/images/delete.png" style="width: 25px;height: 25px;">
-							</button>
-						</td>
-					</tr>
-					<tr>
-						<td>2019년</td>
-						<td>납부안함</td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>2018년</td>
-						<td>2018. 11. 22</td>
-						<td>30,000원</td>
-						<td>
-							<button type="button" style="background-color: white; border: 0px;">
-								<img src="/images/delete.png" style="width: 25px;height: 25px;">
-							</button>
-						</td>
-					</tr>
-					<tr>
-						<td>2017년</td>
-						<td>2017. 8. 15</td>
-						<td>30,000원</td>
-						<td>
-							<button type="button" style="background-color: white; border: 0px;">
-								<img src="/images/delete.png" style="width: 25px;height: 25px;">
-							</button>
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div id="pay"></div>
-		</div>
 	</div>
-	<div style="
-        display: flex;
-        width: 800px;
-        justify-content: space-between;
-        margin-top: 5rem;
-        padding-left: 5rem;
-      ">
-		<button type="button" class="btn btn-primary" style="width: 8rem;">
-			정보변경
-		</button>
-		<button onclick="pay()" type="button" class="btn btn-primary" style="width: 8rem;">
-			회비 납부
-		</button>
+
+	<div id="div_icon" style="display: none;">
+		<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+			<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+			<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+		  </svg>
 	</div>
+
 	<%- include ("../include/footer.ejs") %>
 </body>
 

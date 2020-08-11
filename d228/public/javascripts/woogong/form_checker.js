@@ -11,6 +11,17 @@
                         return (value && (value.trim().length > 0));
                     }
                 },
+                "integer": {
+                    errorMessage: "숫자를 입력하세요.",
+                    fnChecking: function(value) {
+                        if (!value || value.trim().length == 0)
+                        {
+                            return true;
+                        }
+
+                        return value.match(/^\d+$/);
+                    }
+                },
                 "yyyy-mm-dd": {
                     errorMessage: "yyyy-mm-dd 형식으로 입력하세요.",
                     fnChecking: function(value) {
@@ -67,6 +78,10 @@
                     }
                 },
             },
+        
+            errorLayerClasses: "col-sm-4",
+        
+            errorLayerParent: "div.row"
         };
 
         var job;
@@ -157,7 +172,7 @@
         }
         else
         {
-            var guideElement = element.closest("div.row").find(".guide_element");
+            var guideElement = element.closest(this.options.errorLayerParent).find(".guide_element");
             if (guideElement)
             {
                 guideElement.find(".message_element").html("");
@@ -167,7 +182,7 @@
 
     FormChecker.prototype.getGuideMessageElement = function(element)
     {
-        var guideElement = element.closest("div.row").find(".guide_element");
+        var guideElement = element.closest(this.options.errorLayerParent).find(".guide_element");
 
         if (guideElement.length == 0)
         {
@@ -179,11 +194,13 @@
 
     FormChecker.prototype.makeGuideElement = function(element)
     {
-        var guideElement = $("<div class='col-sm-4 guide_element' style='padding-top: 5px;'></div>");
+        var guideElement = $("<div class='guide_element' style='padding-top: 5px;'></div>");
+        guideElement.addClass(this.options.errorLayerClasses);
+
         var messageElement = $("<small class='form-text message_element'></small>");
         guideElement.append(messageElement);
 
-        element.closest("div.row").append(guideElement);
+        element.closest(this.options.errorLayerParent).append(guideElement);
 
         return guideElement;
     };
@@ -235,6 +252,18 @@
                 var message = element.attr("data-regex-message") || "데이터 형식이 올바르지 않습니다.";
 
                 this.showGuideMessage(element, message);
+                return false;
+            }
+        }
+
+        var ruleFn = element.attr("data-rule-fn");
+        if (ruleFn)
+        {
+            var result = eval(ruleFn).call();
+
+            if (false == result)
+            {
+                this.showGuideMessage(element, element.attr("data-rule-fn-message") || "잘못된 값입니다.");
                 return false;
             }
         }

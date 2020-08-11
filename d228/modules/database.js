@@ -10,7 +10,7 @@ var pool = mysql.createPool({
 
 var database = {
     
-    executeQuery: function(query, callback) {
+    executeQuery: function(query, callback, callbackFail) {
         pool.getConnection((err, connection) => {
             if (err)
             {
@@ -26,7 +26,10 @@ var database = {
                     console.error('Database connection was refused.')
                 }
 
-                throw err;
+                if (callbackFail)
+                {
+                    callbackFail(err);
+                }
             }
         
             if (connection) 
@@ -34,7 +37,20 @@ var database = {
                 connection.query(query, function(err, result, fields) {
                     if (err)
                     {
-                        throw err;
+                        var msg = "서버 오류입니다. 개발자에게 문의하세요.";
+
+                        if (err.code == 'ER_BAD_FIELD_ERROR')
+                        {
+                            msg = "SQL 오류입니다. 개발자에게 문의하세요.";
+                        }
+
+                        console.log("error ", err);
+                        //throw err;
+                        if (callbackFail)
+                        {
+                            callbackFail(msg);
+                        }
+                        return;
                     }
 
                     if (callback)

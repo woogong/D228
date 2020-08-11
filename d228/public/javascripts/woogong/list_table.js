@@ -70,9 +70,16 @@
                 this.tbody.empty();
             }
 
-            for (var i in this.list)
+            if (this.list.length > 0)
             {
-                this.showLine(this.list[i]);
+                for (var i in this.list)
+                {
+                    this.showLine(this.list[i]);
+                }
+            }
+            else
+            {
+                this.showEmptyLine();
             }
         },
 
@@ -113,6 +120,27 @@
                     location.href = this1.settings.rowLink + "?" + this1.settings.keyField + "=" + data[this1.settings.keyField];
                 });
             }
+            else if (this.settings.fnSelect)
+            {
+                tr.css("cursor", "pointer");
+
+                tr.on("click", function() {
+                    this1.settings.fnSelect(data[this1.settings.keyField]);
+                });
+            }
+        },
+
+        showEmptyLine: function()
+        {
+            var tr = $("<tr />");
+            this.tbody.append(tr);
+
+            var td = $("<td />");
+            td.attr("colspan", this.columns.length);
+            td.css("text-align", "center");
+            td.html("데이터가 없습니다.");
+
+            tr.append(td);
         },
 
         addColumnData: function(tr, column, data)
@@ -120,8 +148,32 @@
             var td = $("<td />");
             tr.append(td);
             
-            var str = this.getShownString(column, data);
-            td.html(str || "&nbsp;");
+            if (column.fnHtml)
+            {
+                var elem = column.fnHtml.call(this, column, data);
+                td.append(elem);
+            }
+            else
+            {
+                var str = this.getShownString(column, data);
+
+                td.html(str || "&nbsp;");
+            }
+
+            if (column.fnSelect)
+            {
+                td.css("cursor", "pointer");
+
+                td.on("click", function(event) {
+                    event.stopPropagation();
+                    
+                    if (column.fnSelect)
+                    {
+                        var caller = column.caller ? column.caller : this;
+                        column.fnSelect.call(caller, data[column.keyField]);
+                    }
+                });
+            }
 
             if (column.align)
             {
@@ -130,6 +182,66 @@
         },
 
         sort: function(column)
+        {
+        	if (!column)
+        	{
+        		listManager.showList(this.list);
+        		return;
+        	}
+        	
+            if (column == this.sortColumn)
+            {
+                this.sortAscendent = this.sortAscendent ? false : true;
+            }
+            else
+            {
+                this.sortAscendent = true;
+            }
+            this.sortColumn = column;
+
+            var this1 = this;
+            if (column.fnSort)
+            {
+            	if (column.fnSort == "number")
+            	{
+                    this.list.sort(function(a, b) {
+                        var strA = this1.getShownString(column, a) || ((this1.sortAscendent) ? "zzzz" : "0000");
+                        var strB = this1.getShownString(column, b) || ((this1.sortAscendent) ? "zzzz" : "0000");
+
+                        strA = strA.replace(/,/gi, "") - 0;
+                        strB = strB.replace(/,/gi, "") - 0;
+                        
+                        var value = (strA >= strB) ? 1 : -1;
+                        value *= (this1.sortAscendent) ? 1 : -1;
+
+                        return value;
+                    });
+            		
+            	}
+            	else if (column.fnSort == "Function")
+            	{
+            		this.list.sort(column.fnSort);
+            	}
+            }
+            else
+            {
+                this.list.sort(function(a, b) {
+                    var strA = this1.getShownString(column, a) || ((this1.sortAscendent) ? "zzzz" : "0000");
+                    var strB = this1.getShownString(column, b) || ((this1.sortAscendent) ? "zzzz" : "0000");
+
+                    var value = (strA >= strB) ? 1 : -1;
+                    value *= (this1.sortAscendent) ? 1 : -1;
+
+                    return value;
+                });
+            }
+            
+            listManager.showList(this.list);
+
+            this.showSortingHeader();
+        },
+
+        sort1: function(column)
         {
             if (column == this.sortColumn)
             {

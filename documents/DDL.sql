@@ -43,4 +43,26 @@ ALTER TABLE membership_fee ADD CONSTRAINT fk_membership_fee_member_seq
 	FOREIGN KEY (member_seq) REFERENCES membership(member_seq);
 
 
+CREATE TABLE merit1
+(
+	merit_seq		INT				NOT NULL	AUTO_INCREMENT	COMMENT '유공자 일련 번호',
+	merit_id		VARCHAR(20)					COMMENT '연번',
+	member_seq		INT							COMMENT '회원 일련 번호',
+	name			VARCHAR(100)	NOT NULL	COMMENT '성명',
+	birthday		DATE						COMMENT '생년월일',
+	school			VARCHAR(100)				COMMENT '학교',
+	graduate		NUMERIC(3)					COMMENT '기수',
+	zipcode			VARCHAR(10)					COMMENT '우편번호',
+	address			VARCHAR(255)				COMMENT '주소',
+	phone_home		VARCHAR(30)					COMMENT '집전화번호',
+	phone_mobile	VARCHAR(30)					COMMENT '휴대전화번호',
+	email			VARCHAR(100)				COMMENT '이메일',
+	note			VARCHAR(1000)				COMMENT '비고',
+	register_date	DATE						COMMENT '등록일',
+	PRIMARY KEY (merit_seq)
+);
+
+ALTER TABLE merit1 ADD CONSTRAINT fk_merit_member_seq
+	FOREIGN KEY (member_seq) REFERENCES membership(member_seq);
+
 

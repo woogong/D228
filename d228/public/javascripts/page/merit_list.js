@@ -14,14 +14,11 @@ var memberListManager = {
             setTimeout(function() {memberListManager.applyFilter();}, 10);
         });
 
-        $("#btn_membership_fee").on("click", function() {
-            memberListManager.changeMembershipFeeStatus();
-            setTimeout(function() {memberListManager.applyFilter();}, 10);
-        });
     },
 
     readList: function(callback) {
-        $.get("/rest/member/list.do", null, function(response) {
+        $.get("/rest/merit/list.do", null, function(response) {
+            console.log(response);
             callback(response);
         });
     },
@@ -33,15 +30,14 @@ var memberListManager = {
         var params = {
             list: list,
             columns: [
-                {name: "아이디", field: "member_id", align: "center", width: "120px"},
-                {name: "순번", field: "seq", align: "center", width: "80px"},
+                {name: "회원아이디", field: "member_id", align: "center", width: "150px"},
+                {name: "연번", field: "merit_id", align: "center", width: "80px"},
                 {name: "성명", field: "name", align: "center", width: "100px"},
-                {name: "회비납부", field: "fee_year", align: "center", width: "100px", fnFormat: memberListManager.formatMembershipFee},
                 {name: "생년월일", field: "birthday", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
-                {name: "가입일", field: "register_date", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
-                {name: "이메일", field: "email", width: "120px"}
+                {name: "출신학교", field: "school", width: "150px"},
+                {name: "기수", field: "graduate", width: "120px", align: "center"}
             ],
-            keyField: "member_seq",
+            keyField: "merit_seq",
             rowLink: "detail"
         };
 

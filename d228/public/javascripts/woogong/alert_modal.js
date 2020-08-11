@@ -1,14 +1,20 @@
 
 (function($) {
 
-
-
     $.alert = function(title, content, fnClose)
     {
         title = title || "&nbsp;";
         content = content || "&nbsp;";
 
         alertManager.showAlertModal(title, content, fnClose);
+    };
+
+    $.confirm = function(title, content, fnOk, fnCancel)
+    {
+        title = title || "&nbsp;";
+        content = content || "&nbsp;";
+
+        alertManager.showConfirmModal(title, content, fnOk, fnCancel);
     };
 
     var alertManager = {
@@ -52,57 +58,55 @@
             return template;
         },
 
-        setOptions: function(options)
-        {
-            this.layer = $("#modal_alert");
-            this.options = options;
-        },
-        
-        showModal: function()
-        {
-            this.layer.find(".modal-title").html(this.options.title);
-            this.layer.find(".modal-body").html(this.options.content);
+        showConfirmModal: function(title, content, fnOk, fnCancel) {
+            this.confirmLayer = this._getConfirmTemplate();
+
+            this.confirmLayer.find(".modal-title").html(title);
+            this.confirmLayer.find(".modal-body").html(content);
             
-            this.makeButtons();
-            
-            alertManager.layer.modal("show");
-        },
-        
-        hideModal: function()
-        {
-            this.layer.modal("hide");
-        },
-        
-        makeButtons: function() {
-            this.layer.find(".modal-footer").empty();
-            
-            for (var i in this.options.buttons)
+            var this1 = this;
+            if (fnOk)
             {
-                this.makeButton(this.options.buttons[i]);
-            }
-        },
-        
-        makeButton: function(button) {
-            var btn = $("<button type='button' class='btn' data-dismiss='modal'></button>");
-            
-            button.type = button.type || "secondary";
-            btn.addClass("btn-" + button.type);
-            
-            btn.html(button.value);
-            
-            if (button.callback)
-            {
-                btn.on("click", function() {
-                    alertManager.hideModal();
-                    alertManager.layer.one("hidden.bs.modal", function() {
-                        button.callback();
-                    });
-                    
+                this.confirmLayer.find(".btn_ok").one("click", function() {
+                    this1.hideConfirmModal();
+                    fnOk();
                 });
             }
-            
-            this.layer.find(".modal-footer").append(btn);
+
+            if (fnCancel)
+            {
+                this.confirmLayer.find(".btn_cancel").one("click", function() {
+                    this1.hideConfirmModal();
+                    fnCancel();
+                });
+            }
+
+            this.confirmLayer.modal("show");
         },
+
+        hideConfirmModal: function()
+        {
+            this.confirmLayer.modal("hide");
+        },
+
+        _getConfirmTemplate: function() {
+            var template = $("#modal_confirm");
+
+            if (template.length == 0)
+            {
+                template = this._makeConfirmTemplate();
+            }
+
+            return template;
+        },
+
+        _makeConfirmTemplate: function() {
+            var template = $(CONFIRM_HTLM);
+            $("body").append(template);
+
+            return template;
+        },
+
     };
 
 
@@ -121,6 +125,27 @@
         '               </div>' +
         '               <div class="modal-footer">' +
         '                   <button type="button" class="btn btn-secondary btn_close" data-dismiss="modal">닫기</button>' +
+        '               </div>' +
+        '           </div>' +
+        '       </div>' +
+        '   </div>';
+
+    const CONFIRM_HTLM 
+        = '	<div class="modal fade" tabindex="-1" role="dialog" id="modal_confirm">' +
+        '      <div class="modal-dialog modal-dialog-centered" role="document">' +
+        '           <div class="modal-content">' +
+        '               <div class="modal-header">' +
+        '                   <h5 class="modal-title">&nbsp;</h5>' +
+        '                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+        '                       <span aria-hidden="true">&times;</span>' +
+        '                   </button>' +
+        '               </div>' +
+        '               <div class="modal-body">' +
+        '                   <p>&nbsp;</p>' +
+        '               </div>' +
+        '               <div class="modal-footer">' +
+        '                   <button type="button" class="btn btn-secondary btn_cancel" data-dismiss="modal">아니오</button>' +
+        '                   <button type="button" class="btn btn-primary btn_ok" data-dismiss="modal">예</button>' +
         '               </div>' +
         '           </div>' +
         '       </div>' +
