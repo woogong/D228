@@ -25,6 +25,40 @@ var api = {
 		sql += "	      FROM membership_fee  ";
 		sql += "    	 GROUP BY member_seq  ";
 		sql += "      ) AS b ON a.member_seq = b.member_seq  ";
+
+		if (params)
+		{
+			console.log("params", params);
+
+			sql += " WHERE a.member_seq > 0 ";
+
+			if (params.query && params.query.length > 0)
+			{
+				sql += "  AND (member_id LIKE '%" + params.query + "%' ";
+				sql += "       OR name LIKE '%" + params.query + "%' ";
+				sql += "       OR job LIKE '%" + params.query + "%') ";
+				sql += "       ";
+				sql += "       ";
+				sql += "       ";
+				sql += "       ";
+			}
+
+			if (params.feeFilter)
+			{
+				var thisYear = new Date().getFullYear();
+
+				if (params.feeFilter == 'Y')
+				{
+					sql += "  AND fee_year = " + thisYear + " ";
+				}
+				else if (params.feeFilter == 'N')
+				{
+					sql += "  AND (fee_year != " + thisYear + " OR fee_year IS NULL) ";
+
+				}
+			}
+		}
+
 		sql += " ORDER BY a.member_seq  ";
 
 		return sql;
@@ -62,7 +96,6 @@ var api = {
 		var sql = "";
 		sql += "INSERT INTO membership  ";
 		sql += "  (member_id, ";
-		sql += "   seq, ";
 		sql += "   name, ";
 		sql += "   birthday, ";
 		sql += "   register_date, ";
@@ -80,24 +113,23 @@ var api = {
 		sql += "   class1, ";
 		sql += "   member_type) ";
 		sql += "VALUES  ";
-		sql += "  ('" + params.memberId + "', ";
-		sql += "   " + '0' + ", ";
-		sql += "   '" + params.name + "', ";
-		sql += "   " + (params.birthday != "" ? "'" + params.birthday + "'" : "null") + ", ";
-		sql += "   '" + params.registerDate + "', ";
-		sql += "   '" + params.zipcode + "', ";
-		sql += "   '" + params.address + "', ";
-		sql += "   '" + params.phoneHome + "', ";
-		sql += "   '" + params.phoneMobile + "', ";
-		sql += "   '" + params.email + "', ";
-		sql += "   '" + params.job + "', ";
-		sql += "   " + (params.introducer != 0 ? "'" + params.introducer + "'" : "null") + ", ";
-		sql += "   '" + params.note + "', ";
+		sql += "  ('" + (params.memberId ? params.memberId : "") + "', ";
+		sql += "   '" + (params.name ? params.name : "") + "', ";
+		sql += "    " + (params.birthday != "" ? "'" + params.birthday + "'" : "null") + ", ";
+		sql += "   '" + (params.registerDate ? params.registerDate : "") + "', ";
+		sql += "   '" + (params.zipcode ? params.zipcode : "") + "', ";
+		sql += "   '" + (params.address ? params.address : "") + "', ";
+		sql += "   '" + (params.phoneHome ? params.phoneHome : "") + "', ";
+		sql += "   '" + (params.phoneMobile ? params.phoneMobile : "") + "', ";
+		sql += "   '" + (params.email ? params.email : "") + "', ";
+		sql += "   '" + (params.job ? params.job : "") + "', ";
+		sql += "    " + ((params.introducer && params.introducer != 0) ? "'" + params.introducer + "'" : "null") + ", ";
+		sql += "   '" + (params.note ? params.note : "") + "', ";
 		sql += "   '" + (params.gender ? params.gender : "") + "', ";
 		sql += "   '" + (params.school ? params.school : "") + "', ";
 		sql += "   '" + (params.grade ? params.grade : "") + "', ";
 		sql += "   '" + (params.class1 ? params.class1 : "") + "', ";
-		sql += "   '" + params.memberType + "') ";
+		sql += "   '" + (params.memberType ? params.memberType : "C") + "') ";
 
 		return sql;
 	},

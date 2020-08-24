@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var multer = require('multer');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -32,6 +33,9 @@ app.use("/js", express.static(path.join(__dirname, "node_modules/bootstrap/dist/
 app.use("/css", express.static(path.join(__dirname, "node_modules/bootstrap/dist/css")));
 
 app.use("/datepicker-bootstrap", express.static(path.join(__dirname, "node_modules/datepicker-bootstrap")));
+
+app.use("/upload", express.static(path.join(__dirname, "uploads")));
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

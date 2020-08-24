@@ -1,12 +1,66 @@
 var express = require('express');
 var router = express.Router();
+var multer = require('multer');
+var xlsx = require("xlsx");
+var path = require('path');
+var mime = require('mime');
+var fs = require('fs');
 var memberService = require("../modules/memberService");
+var excelService = require("../modules/excelService");
+
+
+let upload = new multer({
+	dest: "upload/"
+});
+  
 
 router.get('/member/list.do', function (req, res, next) {
 	memberService.execute("getMemberList", null, function (result) {
 		res.json(result);
 	});
 });
+
+router.get('/excel/membership_list.do', function (req, res, next) {
+	memberService.execute("getMemberList", req.query, function (result) {
+		
+		var file = excelService.makeMembershipFile(result);
+		
+		/*
+		makeMembershipExcelFile(result);
+
+		var file = TEMP_DIRECTORY + MEMBERSHIP_EXCEL_FILE;
+		*/
+		
+		var mimetype = mime.lookup(file);
+	  
+		res.setHeader('Content-disposition', 'attachment; filename=membership.xlsx');
+		res.setHeader('Content-type', mimetype);
+	  
+		var filestream = fs.createReadStream(file);
+		filestream.pipe(res);
+	});
+});
+
+function makeExcelFile(obj, filePath)
+{
+	var workbook = xlsx.utils.book_new();
+	var sheet = xlsx.utils.json_to_sheet(obj);
+
+	xlsx.utils.book_append_sheet(workbook, sheet, "Sheet");
+
+	xlsx.writeFile(workbook, filePath);
+}
+
+function makeMembershipExcelFile(obj)
+{
+	var workbook = xlsx.utils.book_new();
+	var sheet = xlsx.utils.json_to_sheet(obj);
+
+
+	xlsx.utils.book_append_sheet(workbook, sheet, "회원목록");
+
+	xlsx.writeFile(workbook, TEMP_DIRECTORY + MEMBERSHIP_EXCEL_FILE);
+}
 
 router.get('/member/list_simple.do', function (req, res, next) {
 	memberService.execute("getSimpleMemberList", null, function (result) {
@@ -172,7 +226,39 @@ router.get('/merit/new_id.do', function (req, res, next) {
 	});
 });
 
+/*
+router.post("/file/upload.do", function(req, res, next) {
+	console.log("file upload  ", req.files, req.body);
+	
+	res.json({resultCode: "Success"});
+});
+*/
 
 
+router.post('/file/membership_register.do', upload.single("excelFile"), function (req, res, next) {
+	let file = req.file;
+
+	var workbook = xlsx.readFile(file.path, {locale: "ko_KR", cellDates: true, dateNF: 'yyyy-mm-dd'});
+	var worksheet;
+	for (var i in workbook.Sheets)
+	{
+		worksheet = workbook.Sheets[i];
+		break;
+	}
+
+	var json = xlsx.utils.sheet_to_json(worksheet, {defval: null, raw: false});
+
+	for (var i in json)
+	{
+		console.log(json[i]);
+		memberService.execute("registerMember", json[i]);
+	}
+
+	let result = {
+		resultCode: "Success"
+	}
+
+	res.json(result);
+});
 
 module.exports = router;
