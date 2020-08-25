@@ -24,13 +24,7 @@ router.get('/excel/membership_list.do', function (req, res, next) {
 	memberService.execute("getMemberList", req.query, function (result) {
 		
 		var file = excelService.makeMembershipFile(result);
-		
-		/*
-		makeMembershipExcelFile(result);
 
-		var file = TEMP_DIRECTORY + MEMBERSHIP_EXCEL_FILE;
-		*/
-		
 		var mimetype = mime.lookup(file);
 	  
 		res.setHeader('Content-disposition', 'attachment; filename=membership.xlsx');
@@ -40,27 +34,6 @@ router.get('/excel/membership_list.do', function (req, res, next) {
 		filestream.pipe(res);
 	});
 });
-
-function makeExcelFile(obj, filePath)
-{
-	var workbook = xlsx.utils.book_new();
-	var sheet = xlsx.utils.json_to_sheet(obj);
-
-	xlsx.utils.book_append_sheet(workbook, sheet, "Sheet");
-
-	xlsx.writeFile(workbook, filePath);
-}
-
-function makeMembershipExcelFile(obj)
-{
-	var workbook = xlsx.utils.book_new();
-	var sheet = xlsx.utils.json_to_sheet(obj);
-
-
-	xlsx.utils.book_append_sheet(workbook, sheet, "회원목록");
-
-	xlsx.writeFile(workbook, TEMP_DIRECTORY + MEMBERSHIP_EXCEL_FILE);
-}
 
 router.get('/member/list_simple.do', function (req, res, next) {
 	memberService.execute("getSimpleMemberList", null, function (result) {
@@ -139,6 +112,21 @@ router.post('/member/membership_fee_list.do', function (req, res, next) {
 	});
 });
 
+router.get('/excel/membership_fee_list.do', function (req, res, next) {
+	memberService.execute("getMembershipFeeList", req.query, function (result) {
+		
+		var file = excelService.makeMembershipFeeFile(result);
+
+		var mimetype = mime.lookup(file);
+	  
+		res.setHeader('Content-disposition', 'attachment; filename=membership_fee.xlsx');
+		res.setHeader('Content-type', mimetype);
+	  
+		var filestream = fs.createReadStream(file);
+		filestream.pipe(res);
+	});
+});
+
 router.post('/member/membership_fee_register.do', function (req, res, next) {
 	memberService.execute("registerMembershipFee", req.body, function (result) {
 		res.json({ 'resultCode': "Success" });
@@ -179,6 +167,31 @@ router.get('/merit/list.do', function (req, res, next) {
 
 			res.json(array);
 		}
+	});
+});
+
+router.get('/excel/merit_list.do', function (req, res, next) {
+	memberService.execute("getMeritList", req.query, function (result) {
+		var data;
+		if (Array.isArray(result))
+		{
+			data = result;
+		}
+		else
+		{
+			data = [];
+			data.push(result);
+		}
+
+		var file = excelService.makeMeritListFile(data);
+
+		var mimetype = mime.lookup(file);
+	  
+		res.setHeader("Content-disposition", "attachment; filename=" + encodeURIComponent("유공자목록.xlsx"));
+		res.setHeader('Content-type', mimetype);
+	  
+		var filestream = fs.createReadStream(file);
+		filestream.pipe(res);
 	});
 });
 

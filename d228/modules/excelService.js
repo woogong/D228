@@ -4,6 +4,8 @@ const { head } = require("../routes/restApi");
 
 const TEMP_DIRECTORY = "/temp/";
 const MEMBERSHIP_EXCEL_FILE = "_membership.xlsx";
+const MEMBERSHIP_FEE_EXCEL_FILE = "_membership_fee.xlsx";
+const MERIT_EXCEL_FILE = "_merit.xlsx";
 
 function formatDate(value)
 {
@@ -42,6 +44,16 @@ function formatMembershipType(value)
 	return result;
 }
 
+function formatGraduate(value)
+{
+	if (value == 0)
+	{
+		return "";
+	}
+
+	return value;
+}
+
 const MEMBERSHIP_HEADER = {
 	'member_seq': {enable: true, name: '관리번호', width: 7},
 	'member_id': {enable: true, name: '회원아이디', width: 10},
@@ -65,23 +77,67 @@ const MEMBERSHIP_HEADER = {
 	'class1': {enable: true, name: '반', width: 5},
 };
 
+const MEMBERSHIP_FEE_HEADER = {
+	'member_id': {enable: true, name: '회원아이디', width: 10},
+	'member_name': {enable: true, name: '성명', width: 7},
+	'year': {enable: true, name: '년도', width: 7},
+	'amount': {enable: true, name: '납부금액', width: 10},
+	'type': {enable: true, name: '납부방법', width: 10},
+	'pay_date': {enable: true, name: '납부일', width: 15, fnFormat: formatDate},
+	'member_type': {enable: true, name: '회원종류', width: 10, fnFormat: formatMembershipType},
+	'note': {enable: true, name: '비고', width: 50},
+	'fee_seq': {enable: false},
+	'member_seq': {enable: false},
+};
+
+const MERIT_HEADER = {
+	'member_id': {enable: true, name: '회원아이디', width: 10},
+	'merit_id': {enable: true, name: '연번', width: 7},
+	'name': {enable: true, name: '성명', width: 7},
+	'birthday': {enable: true, name: '생년월일', width: 15, fnFormat: formatDate},
+	'school': {enable: true, name: '출신학교', width: 25},
+	'graduate': {enable: true, name: '기수', width: 5, fnFormat: formatGraduate},
+	'phone_home': {enable: true, name: '전화번호', width: 15},
+	'phone_mobile': {enable: true, name: '핸드폰', width: 15},
+	'register_date': {enable: true, name: '등록일', width: 15, fnFormat: formatDate},
+	'note': {enable: true, name: '비고', width: 50},
+	'merit_seq': {enable: false},
+	'member_seq': {enable: false},
+};
+
 var api = {
 
 	makeMembershipFile : function(data)
 	{
-		data = this._removeUnusedColumns(data, MEMBERSHIP_HEADER);
+		return this.makeExcelFile(data, MEMBERSHIP_HEADER, MEMBERSHIP_EXCEL_FILE, "회원목록");
+	},
+
+	makeMembershipFeeFile : function(data)
+	{
+		return this.makeExcelFile(data, MEMBERSHIP_FEE_HEADER, MEMBERSHIP_FEE_EXCEL_FILE, "회비납부목록");
+	},
+
+	makeMeritListFile : function(data)
+	{
+		return this.makeExcelFile(data, MERIT_HEADER, MERIT_EXCEL_FILE, "유공자목록");
+	},
+
+	makeExcelFile : function(data, headerOptions, fileName, sheetName)
+	{
+		console.log("makeExcelFile", fileName, sheetName);
+		data = this._removeUnusedColumns(data, headerOptions);
 
 		var workbook = xlsx.utils.book_new();
-		var sheet = xlsx.utils.json_to_sheet(data, {header: this._reorderColumns(MEMBERSHIP_HEADER)});
+		var sheet = xlsx.utils.json_to_sheet(data, {header: this._reorderColumns(headerOptions)});
 	
-		this._renameHeader(sheet, MEMBERSHIP_HEADER);
-		sheet['!cols'] = this._makeColumnWidthArray(MEMBERSHIP_HEADER);
+		this._renameHeader(sheet, headerOptions);
+		sheet['!cols'] = this._makeColumnWidthArray(headerOptions);
 
-		xlsx.utils.book_append_sheet(workbook, sheet, "회원목록");
+		xlsx.utils.book_append_sheet(workbook, sheet, sheetName);
 	
-		xlsx.writeFile(workbook, TEMP_DIRECTORY + MEMBERSHIP_EXCEL_FILE);
+		xlsx.writeFile(workbook, TEMP_DIRECTORY + fileName);
 
-		return TEMP_DIRECTORY + MEMBERSHIP_EXCEL_FILE;
+		return TEMP_DIRECTORY + fileName;
 	},
 
 	_removeUnusedColumns: function(data, headerOptions)

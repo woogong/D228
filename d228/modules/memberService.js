@@ -209,6 +209,15 @@ var api = {
 			sql += "   AND a.member_seq = " + params.memberSeq + " ";
 		}
 
+		if (params.query)
+		{
+			sql += "   AND (b.member_id LIKE '%" + params.query + "%' ";
+			sql += "        OR b.name LIKE '%" + params.query + "%' ";
+			sql += "        OR a.year LIKE '%" + params.query + "%' ";
+			sql += "        OR a.pay_date LIKE '%" + params.query + "%' ";
+			sql += "        OR a.note LIKE '%" + params.query + "%') ";
+		}
+
 		sql += " ORDER BY a.fee_seq DESC ";
 
 		return sql;
@@ -272,6 +281,24 @@ var api = {
 		sql += "	b.member_id ";
 		sql += "  FROM merit1 AS a ";
 		sql += "  LEFT JOIN membership AS b ON a.member_seq = b.member_seq ";
+
+		if (params)
+		{
+			sql += " WHERE merit_id > 0 ";
+			if (params.query)
+			{
+				sql += "   AND (a.merit_id LIKE '%" + params.query + "%' ";
+				sql += "        OR a.name LIKE '%" + params.query + "%' ";
+				sql += "        OR a.birthday LIKE '%" + params.query + "%' ";
+				sql += "        OR a.school LIKE '%" + params.query + "%' ";
+				sql += "        OR a.graduate LIKE '%" + params.query + "%' ";
+				sql += "        OR a.phone_home LIKE '%" + params.query + "%' ";
+				sql += "        OR a.phone_mobile LIKE '%" + params.query + "%' ";
+				sql += "        OR a.note LIKE '%" + params.query + "%' ";
+				sql += "        OR b.member_id LIKE '%" + params.query + "%') ";
+			}
+		}
+
 		sql += " ORDER BY a.merit_seq  ";
 
 		return sql;

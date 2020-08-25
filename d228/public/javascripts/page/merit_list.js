@@ -10,8 +10,14 @@ var memberListManager = {
 
     setEventHandlers: function()
     {
+        var this1 = this;
+        
         $("input[name='query']").on("change", function() {
             setTimeout(function() {memberListManager.applyFilter();}, 10);
+        });
+
+        $("#btn_excel").on("click", function () {
+            this1.doExcelDownload();
         });
 
     },
@@ -124,6 +130,15 @@ var memberListManager = {
             btn.html("회비납부 - 전체");
             btn.attr("data_status", "A");
         }
+    },
+
+    doExcelDownload: function()
+    {
+        var params = {
+            query: $("input[name='query']").val()
+        };
+
+        location.href = "/rest/excel/merit_list.do?" + $.param(params);
     },
 
     formatDate: function(value, data)

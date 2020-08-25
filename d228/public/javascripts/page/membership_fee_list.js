@@ -24,6 +24,10 @@ var feeListManager = {
             this1.openMembershipFeePopup();
         });
 
+        $("#btn_excel").on("click", function () {
+            this1.doExcelDownload();
+        });
+
         $("#modal_register .btn_save").on("click", function() {
             this1.saveMembershipFee();
         });
@@ -245,6 +249,15 @@ var feeListManager = {
                 return list[i];
             }
         }
+    },
+
+    doExcelDownload: function()
+    {
+        var params = {
+            query: $("input[name='query']").val()
+        };
+
+        location.href = "/rest/excel/membership_fee_list.do?" + $.param(params);
     },
 
     makeFeeYearCombo: function()

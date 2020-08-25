@@ -160,14 +160,7 @@ var memberListManager = {
             feeFilter: $("#btn_membership_fee").attr("data_status"),
         };
 
-        console.log($.param(params));
         location.href = "/rest/excel/membership_list.do?" + $.param(params);
-
-        /*
-        $.post("/rest/excel/membership_list.do", params, function(response) {
-            console.log("doExcelDownload", response);
-        });
-        */
     },
 
     openExcelRegisterPopup: function()
