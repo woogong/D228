@@ -267,53 +267,12 @@ router.get('/merit/new_id.do', function (req, res, next) {
 });
 
 router.post('/file/membership_register.do', upload.single("excelFile"), function (req, res, next) {
-	let file = req.file;
-
-	var workbook = xlsx.readFile(file.path, {locale: "ko_KR", cellDates: true, dateNF: 'yyyy-mm-dd'});
-	var worksheet;
-	for (var i in workbook.Sheets)
-	{
-		worksheet = workbook.Sheets[i];
-		break;
-	}
-
-	var json = xlsx.utils.sheet_to_json(worksheet, {defval: null, raw: false});
-
-	for (var i in json)
-	{
-		memberService.execute("registerMember", json[i]);
-	}
-
-	let result = {
-		resultCode: "Success"
-	}
-
+	var result = doBatchRegister(req, excelService.buildMembershipData, "registerMemberBatch");
 	res.json(result);
 });
 
 router.post('/file/membership_fee_register.do', upload.single("excelFile"), function (req, res, next) {
-	let file = req.file;
-
-	var workbook = xlsx.readFile(file.path, {locale: "ko_KR", cellDates: true, dateNF: 'yyyy-mm-dd'});
-	var worksheet;
-	for (var i in workbook.Sheets)
-	{
-		worksheet = workbook.Sheets[i];
-		break;
-	}
-
-	var json = xlsx.utils.sheet_to_json(worksheet, {defval: null, raw: false});
-
-	for (var i in json)
-	{
-		var data = excelService.buildMembershipFeeData(json[i]);
-		memberService.execute("registerMembershipFeeByMemberId", data);
-	}
-
-	let result = {
-		resultCode: "Success"
-	}
-
+	var result = doBatchRegister(req, excelService.buildMembershipFeeData, "registerMembershipFeeByMemberId");
 	res.json(result);
 });
 

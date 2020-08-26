@@ -54,6 +54,20 @@ function formatGraduate(value)
 	return value;
 }
 
+function formatGender(value)
+{
+	if (value == "M")
+	{
+		return "남";
+	}
+	else if (value == "F")
+	{
+		return "여";
+	}
+
+	return "";
+}
+
 const MEMBERSHIP_HEADER = {
 	'member_seq': {enable: true, name: '관리번호', width: 7},
 	'member_id': {enable: true, name: '회원아이디', width: 10},
@@ -71,7 +85,7 @@ const MEMBERSHIP_HEADER = {
 	'introducer_seq': {enable: true, name: '추천인관리번호', width: 10},
 	'email': {enable: true, name: '이메일', width: 20},
 	'note': {enable: true, name: '비고', width: 50},
-	'gender': {enable: true, name: '성별', width: 5},
+	'gender': {enable: true, name: '성별', width: 5, fnFormat: formatGender},
 	'school': {enable: true, name: '학교', width: 20},
 	'grade': {enable: true, name: '학년', width: 5},
 	'class1': {enable: true, name: '반', width: 5},
@@ -106,6 +120,26 @@ const MERIT_HEADER = {
 	'note': {enable: true, name: '비고', width: 50},
 	'merit_seq': {enable: false},
 	'member_seq': {enable: false},
+};
+
+const MEMBERSHIP_FIELDS = {
+	'회원아이디': 'member_id',
+	'성명': 'name',
+	'생년월일': 'birthday',
+	'가입일': 'register_date',
+	'회원종류': 'member_type',
+	'전화번호': 'phone_home',
+	'핸드폰': 'phone_mobile',
+	'우편번호': 'zipcode',
+	'주소': 'address',
+	'이메일': 'email',
+	'직업(소속)': 'job',
+	'추천인관리번호': 'introducer_seq',
+	'비고': 'note',
+	'성별': 'gender',
+	'학교': 'school',
+	'학년': 'grade',
+	'반': 'class1',
 };
 
 const MEMBERSHIP_FEE_FIELDS = {
@@ -152,9 +186,14 @@ var api = {
 		return this.makeExcelFile(data, MERIT_HEADER, MERIT_EXCEL_FILE, "유공자목록");
 	},
 
+	buildMembershipData: function(raw)
+	{
+		return api.buildJsonData(raw, MEMBERSHIP_FIELDS);
+	},
+
 	buildMembershipFeeData: function(raw)
 	{
-		return this.buildJsonData(raw, MEMBERSHIP_FEE_FIELDS);
+		return api.buildJsonData(raw, MEMBERSHIP_FEE_FIELDS);
 	},
 
 	buildMeritData: function(raw)

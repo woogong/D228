@@ -45,6 +45,7 @@ var memberListManager = {
 
     readList: function(callback) {
         $.get("/rest/member/list.do", null, function(response) {
+            console.log(response);
             callback(response);
         });
     },
@@ -57,12 +58,12 @@ var memberListManager = {
             list: list,
             columns: [
                 {name: "아이디", field: "member_id", align: "center", width: "120px"},
-                {name: "순번", field: "seq", align: "center", width: "80px"},
                 {name: "성명", field: "name", align: "center", width: "100px"},
                 {name: "회비납부", field: "fee_year", align: "center", width: "100px", fnFormat: memberListManager.formatMembershipFee},
                 {name: "생년월일", field: "birthday", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
                 {name: "가입일", field: "register_date", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
-                {name: "이메일", field: "email", width: "120px"}
+                {name: "휴대폰", field: "phone_mobile", align: "center", width: "120px"},
+                {name: "이메일", field: "email", width: "120px"},
             ],
             keyField: "member_seq",
             rowLink: "detail"

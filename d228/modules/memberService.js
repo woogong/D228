@@ -134,6 +134,69 @@ var api = {
 		return sql;
 	},
 
+	registerMemberBatch: function(params, callback) {
+		var member_type = "";
+		if (params.member_type)
+		{
+			if (params.member_type == "P")
+			{
+				member_type = "후원회원";
+			}
+			else if (params.member_type == "F")
+			{
+				member_type = "가족회원";
+			}
+			else if (params.member_type == "S")
+			{
+				member_type = "학생회원";
+			}
+			else
+			{
+				member_type = "일반회원";
+			}
+		}
+
+		var sql = "";
+		sql += "INSERT INTO membership  ";
+		sql += "  (member_id, ";
+		sql += "   name, ";
+		sql += "   birthday, ";
+		sql += "   register_date, ";
+		sql += "   zipcode, ";
+		sql += "   address, ";
+		sql += "   phone_home, ";
+		sql += "   phone_mobile, ";
+		sql += "   email, ";
+		sql += "   job, ";
+		sql += "   introducer_seq, ";
+		sql += "   note, ";
+		sql += "   gender, ";
+		sql += "   school, ";
+		sql += "   grade, ";
+		sql += "   class1, ";
+		sql += "   member_type) ";
+		sql += "VALUES  ";
+		sql += "  ('" + (params.member_id ? params.member_id : "") + "', ";
+		sql += "   '" + (params.name ? params.name : "") + "', ";
+		sql += "    " + (params.birthday != "" ? "'" + params.birthday + "'" : "null") + ", ";
+		sql += "   '" + (params.register_date ? params.register_date : "") + "', ";
+		sql += "   '" + (params.zipcode ? params.zipcode : "") + "', ";
+		sql += "   '" + (params.address ? params.address : "") + "', ";
+		sql += "   '" + (params.phone_home ? params.phone_home : "") + "', ";
+		sql += "   '" + (params.phone_mobile ? params.phone_mobile : "") + "', ";
+		sql += "   '" + (params.email ? params.email : "") + "', ";
+		sql += "   '" + (params.job ? params.job : "") + "', ";
+		sql += "    " + ((params.introducer_seq && params.introducer_seq != 0) ? "'" + params.introducer_seq + "'" : "null") + ", ";
+		sql += "   '" + (params.note ? params.note : "") + "', ";
+		sql += "   '" + (params.gender ? (params.gender == "남" ? "M" : "F") : "") + "', ";
+		sql += "   '" + (params.school ? params.school : "") + "', ";
+		sql += "   '" + (params.grade ? params.grade : "") + "', ";
+		sql += "   '" + (params.class1 ? params.class1 : "") + "', ";
+		sql += "   '" + member_type + "') ";
+
+		return sql;
+	},
+
 	updateMember: function(params, callback)
 	{
 		var sql = "";
