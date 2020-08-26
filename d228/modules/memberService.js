@@ -243,6 +243,26 @@ var api = {
 		return sql;
 	},
 
+	registerMembershipFeeByMemberId: function(params, callback) {
+		var sql = "";
+		sql += "INSERT INTO membership_fee  ";
+		sql += "  (member_seq, ";
+		sql += "   pay_date, ";
+		sql += "   amount, ";
+		sql += "   year, ";
+		sql += "   type, ";
+		sql += "   note) ";
+		sql += "VALUES  ";
+		sql += "  ((SELECT member_seq FROM membership WHERE member_id = '" + params.member_id + "'), ";
+		sql += "   '" + params.pay_date + "', ";
+		sql += "   '" + params.amount + "', ";
+		sql += "   '" + params.year + "', ";
+		sql += "   '" + (params.type ? params.type : "") + "', ";
+		sql += "   '" + (params.note ? params.note : "") + "') ";
+
+		return sql;
+	},
+
 	updateMembershipFee: function(params, callback) {
 		var sql = "";
 		sql += "UPDATE membership_fee SET ";
@@ -277,9 +297,12 @@ var api = {
 		sql += "	a.register_date, ";
 		sql += "	a.phone_home, ";
 		sql += "	a.phone_mobile, ";
+		sql += "	a.zipcode, ";
+		sql += "	a.address, ";
+		sql += "	a.email, ";
 		sql += "	a.note, ";
 		sql += "	b.member_id ";
-		sql += "  FROM merit1 AS a ";
+		sql += "  FROM merit AS a ";
 		sql += "  LEFT JOIN membership AS b ON a.member_seq = b.member_seq ";
 
 		if (params)
@@ -322,7 +345,7 @@ var api = {
 		sql += "	a.email, ";
 		sql += "	a.note, ";
 		sql += "	b.member_id ";
-		sql += "  FROM merit1 AS a ";
+		sql += "  FROM merit AS a ";
 		sql += "  LEFT JOIN membership AS b ON a.member_seq = b.member_seq ";
 		sql += " WHERE merit_seq = " + params.meritSeq + " ";
 
@@ -331,7 +354,7 @@ var api = {
 
 	registerMerit: function(params, callback) {
 		var sql = "";
-		sql += "INSERT INTO merit1  ";
+		sql += "INSERT INTO merit  ";
 		sql += "  (merit_id, ";
 		sql += "   member_seq, ";
 		sql += "   name, ";
@@ -362,11 +385,45 @@ var api = {
 
 		return sql;
 	},
+	
+	registerMeritByMemberId: function(params, callback) {
+		var sql = "";
+		sql += "INSERT INTO merit  ";
+		sql += "  (merit_id, ";
+		sql += "   member_seq, ";
+		sql += "   name, ";
+		sql += "   birthday, ";
+		sql += "   school, ";
+		sql += "   graduate, ";
+		sql += "   zipcode, ";
+		sql += "   address, ";
+		sql += "   phone_home, ";
+		sql += "   phone_mobile, ";
+		sql += "   email, ";
+		sql += "   note, ";
+		sql += "   register_date) ";
+		sql += "VALUES  ";
+		sql += "  ('" + params.merit_id + "', ";
+		sql += "    (SELECT member_seq FROM membership WHERE member_id = '" + params.member_id + "'), ";
+		sql += "   '" + params.name + "', ";
+		sql += "   " + (params.birthday != "" ? "'" + params.birthday + "'" : "null") + ", ";
+		sql += "   '" + params.school + "', ";
+		sql += "   '" + params.graduate + "', ";
+		sql += "   '" + params.zipcode + "', ";
+		sql += "   '" + params.address + "', ";
+		sql += "   '" + params.phone_home + "', ";
+		sql += "   '" + params.phone_mobile + "', ";
+		sql += "   '" + params.email + "', ";
+		sql += "   '" + params.note + "', ";
+		sql += "   " + (params.register_date ? "'" + params.register_date + "'" : "now()") + ") ";
+
+		return sql;
+	},
 
 	updateMerit: function(params, callback)
 	{
 		var sql = "";
-		sql += "UPDATE merit1 SET ";
+		sql += "UPDATE merit SET ";
 		sql += "	member_seq = '" + params.memberSeq + "', ";
 		sql += "	merit_id = '" + params.meritId + "', ";
 		sql += "	name = '" + params.name + "', ";
@@ -387,7 +444,7 @@ var api = {
 	removeMerit: function(params, callback)
 	{
 		var sql = "";
-		sql += "DELETE FROM merit1 ";
+		sql += "DELETE FROM merit ";
 		sql += " WHERE merit_seq = " + params.meritSeq + " ";
 
 		return sql;
@@ -396,7 +453,7 @@ var api = {
 	getCountOfMerits: function(params, callback) {
 		var sql = "";
 		sql += "SELECT COUNT(*) AS countMerits  ";
-		sql += "  FROM merit1 AS a ";
+		sql += "  FROM merit AS a ";
 		sql += " where a.merit_id = '" + params.value + "' ";
 
 		return sql;
@@ -405,7 +462,7 @@ var api = {
 	getNewMeritId: function(params, callback) {
 		var sql = "";
 		sql += "SELECT MAX(merit_id) AS max_id ";
-		sql += "  FROM merit1 ";
+		sql += "  FROM merit ";
 
 		return sql;
 	},

@@ -1,25 +1,43 @@
 
 $(document).ready(function() {
-    memberListManager.setEventHandlers();
-    memberListManager.readList(memberListManager.showList);
+    meritListManager.setEventHandlers();
+    meritListManager.readList(meritListManager.showList);
+
+    meritListManager.prepareInputValidation();
 });
 
 var gThisYear = new Date().getFullYear();
 
-var memberListManager = {
+var meritListManager = {
 
     setEventHandlers: function()
     {
         var this1 = this;
         
         $("input[name='query']").on("change", function() {
-            setTimeout(function() {memberListManager.applyFilter();}, 10);
+            setTimeout(function() {meritListManager.applyFilter();}, 10);
         });
 
         $("#btn_excel").on("click", function () {
             this1.doExcelDownload();
         });
 
+        $("#btn_excel_register").on("click", function () {
+            this1.openExcelRegisterPopup();
+        });
+
+        $("#modal_excel_register .btn_excel_save").on("click", function() {
+            this1.saveMembershipFeeByExcel();
+        });
+
+    },
+
+    prepareInputValidation: function()
+    {
+        $("#form_excel_register").checkInputValidation({
+            errorLayerClasses: "",
+            errorLayerParent: "div.form-group",
+        });
     },
 
     readList: function(callback) {
@@ -31,7 +49,7 @@ var memberListManager = {
 
     showList: function(list)
     {
-        memberListManager.list = list;
+        meritListManager.list = list;
 
         var params = {
             list: list,
@@ -39,7 +57,7 @@ var memberListManager = {
                 {name: "회원아이디", field: "member_id", align: "center", width: "150px"},
                 {name: "연번", field: "merit_id", align: "center", width: "80px"},
                 {name: "성명", field: "name", align: "center", width: "100px"},
-                {name: "생년월일", field: "birthday", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
+                {name: "생년월일", field: "birthday", align: "center", width: "120px", fnFormat: meritListManager.formatDate},
                 {name: "출신학교", field: "school", width: "150px"},
                 {name: "기수", field: "graduate", width: "120px", align: "center"}
             ],
@@ -130,6 +148,40 @@ var memberListManager = {
             btn.html("회비납부 - 전체");
             btn.attr("data_status", "A");
         }
+    },
+
+    openExcelRegisterPopup: function()
+    {
+        $("#modal_excel_register").modal("show");
+    },
+
+    saveMembershipFeeByExcel: function()
+    {
+        var form = $("#form_excel_register");
+
+        var this1 = this;
+        var option = {
+            dataType: "JSON",
+            
+            success: function(response) {
+                if (response.resultCode == "Success")
+                {
+                    $.alert("유공자등록", "유공자 목록 일괄 등록을 완료하였습니다.", function() {
+                        location.reload();
+                    });
+                }
+                else
+                {
+                    $.alert("유공자등록", "유공자 목록 일괄 등록에 실패하였습니다. " + (response.failMessage ? response.failMessage : ""));
+                }
+            },
+            
+            beforeSubmit: function() {
+                return form.checkInputValidation("isValid");
+            },
+        };
+        
+        form.ajaxSubmit(option);
     },
 
     doExcelDownload: function()

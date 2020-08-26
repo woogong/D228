@@ -12,7 +12,34 @@ var excelService = require("../modules/excelService");
 let upload = new multer({
 	dest: "upload/"
 });
-  
+
+function doBatchRegister(req, fnDataBuilder, saveJob)
+{
+	let file = req.file;
+
+	var workbook = xlsx.readFile(file.path, {locale: "ko_KR", cellDates: true, dateNF: 'yyyy-mm-dd'});
+	var worksheet;
+	for (var i in workbook.Sheets)
+	{
+		worksheet = workbook.Sheets[i];
+		break;
+	}
+
+	var json = xlsx.utils.sheet_to_json(worksheet, {defval: null, raw: false});
+
+	for (var i in json)
+	{
+		var data = fnDataBuilder(json[i]);
+
+		memberService.execute(saveJob, data);
+	}
+
+	let result = {
+		resultCode: "Success"
+	}
+
+	return result;
+};
 
 router.get('/member/list.do', function (req, res, next) {
 	memberService.execute("getMemberList", null, function (result) {
@@ -27,7 +54,7 @@ router.get('/excel/membership_list.do', function (req, res, next) {
 
 		var mimetype = mime.lookup(file);
 	  
-		res.setHeader('Content-disposition', 'attachment; filename=membership.xlsx');
+		res.setHeader("Content-disposition", "attachment; filename=" + encodeURIComponent("회원목록.xlsx"));
 		res.setHeader('Content-type', mimetype);
 	  
 		var filestream = fs.createReadStream(file);
@@ -119,7 +146,7 @@ router.get('/excel/membership_fee_list.do', function (req, res, next) {
 
 		var mimetype = mime.lookup(file);
 	  
-		res.setHeader('Content-disposition', 'attachment; filename=membership_fee.xlsx');
+		res.setHeader("Content-disposition", "attachment; filename=" + encodeURIComponent("회비납부목록.xlsx"));
 		res.setHeader('Content-type', mimetype);
 	  
 		var filestream = fs.createReadStream(file);
@@ -239,15 +266,6 @@ router.get('/merit/new_id.do', function (req, res, next) {
 	});
 });
 
-/*
-router.post("/file/upload.do", function(req, res, next) {
-	console.log("file upload  ", req.files, req.body);
-	
-	res.json({resultCode: "Success"});
-});
-*/
-
-
 router.post('/file/membership_register.do', upload.single("excelFile"), function (req, res, next) {
 	let file = req.file;
 
@@ -263,7 +281,6 @@ router.post('/file/membership_register.do', upload.single("excelFile"), function
 
 	for (var i in json)
 	{
-		console.log(json[i]);
 		memberService.execute("registerMember", json[i]);
 	}
 
@@ -273,5 +290,37 @@ router.post('/file/membership_register.do', upload.single("excelFile"), function
 
 	res.json(result);
 });
+
+router.post('/file/membership_fee_register.do', upload.single("excelFile"), function (req, res, next) {
+	let file = req.file;
+
+	var workbook = xlsx.readFile(file.path, {locale: "ko_KR", cellDates: true, dateNF: 'yyyy-mm-dd'});
+	var worksheet;
+	for (var i in workbook.Sheets)
+	{
+		worksheet = workbook.Sheets[i];
+		break;
+	}
+
+	var json = xlsx.utils.sheet_to_json(worksheet, {defval: null, raw: false});
+
+	for (var i in json)
+	{
+		var data = excelService.buildMembershipFeeData(json[i]);
+		memberService.execute("registerMembershipFeeByMemberId", data);
+	}
+
+	let result = {
+		resultCode: "Success"
+	}
+
+	res.json(result);
+});
+
+router.post('/file/merit_register.do', upload.single("excelFile"), function (req, res, next) {
+	var result = doBatchRegister(req, excelService.buildMeritData, "registerMeritByMemberId");
+	res.json(result);
+});
+
 
 module.exports = router;

@@ -30,7 +30,7 @@ var memberListManager = {
         });
 
         $("#modal_excel_register .btn_excel_save").on("click", function() {
-            memberListManager.saveMembershipByExcel();
+            memberListManager.saveMeritByExcel();
         });
 
     },
@@ -168,7 +168,7 @@ var memberListManager = {
         $("#modal_excel_register").modal("show");
     },
 
-    saveMembershipByExcel: function()
+    saveMeritByExcel: function()
     {
         var form = $("#form_excel_register");
 

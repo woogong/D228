@@ -99,10 +99,40 @@ const MERIT_HEADER = {
 	'graduate': {enable: true, name: '기수', width: 5, fnFormat: formatGraduate},
 	'phone_home': {enable: true, name: '전화번호', width: 15},
 	'phone_mobile': {enable: true, name: '핸드폰', width: 15},
+	'email': {enable: true, name: '이메일', width: 20},
+	'zipcode': {enable: true, name: '우편번호', width: 10},
+	'address': {enable: true, name: '주소', width: 60},
 	'register_date': {enable: true, name: '등록일', width: 15, fnFormat: formatDate},
 	'note': {enable: true, name: '비고', width: 50},
 	'merit_seq': {enable: false},
 	'member_seq': {enable: false},
+};
+
+const MEMBERSHIP_FEE_FIELDS = {
+	'회원아이디': 'member_id',
+	'성명': 'name',
+	'년도': 'year',
+	'납부금액': 'amount',
+	'납부방법': 'type',
+	'납부일': 'pay_date',
+	'회원종류': 'member_type',
+	'비고': 'note'
+};
+
+const MERIT_FIELDS = {
+	'회원아이디': 'member_id',
+	'연번': 'merit_id',
+	'성명': 'name',
+	'생년월일': 'birthday',
+	'출신학교': 'school',
+	'기수': 'graduate',
+	'전화번호': 'phone_home',
+	'핸드폰': 'phone_mobile',
+	'우편번호': 'zipcode',
+	'주소': 'address',
+	'이메일': 'email',
+	'등록일': 'register_date',
+	'비고': 'note'
 };
 
 var api = {
@@ -122,9 +152,18 @@ var api = {
 		return this.makeExcelFile(data, MERIT_HEADER, MERIT_EXCEL_FILE, "유공자목록");
 	},
 
+	buildMembershipFeeData: function(raw)
+	{
+		return this.buildJsonData(raw, MEMBERSHIP_FEE_FIELDS);
+	},
+
+	buildMeritData: function(raw)
+	{
+		return api.buildJsonData(raw, MERIT_FIELDS);
+	},
+
 	makeExcelFile : function(data, headerOptions, fileName, sheetName)
 	{
-		console.log("makeExcelFile", fileName, sheetName);
 		data = this._removeUnusedColumns(data, headerOptions);
 
 		var workbook = xlsx.utils.book_new();
@@ -138,6 +177,18 @@ var api = {
 		xlsx.writeFile(workbook, TEMP_DIRECTORY + fileName);
 
 		return TEMP_DIRECTORY + fileName;
+	},
+
+	buildJsonData: function(raw, convertTable)
+	{
+		var data = {};
+
+		for (var i in raw)
+		{
+			data[convertTable[i]] = raw[i];
+		}
+
+		return data;
 	},
 
 	_removeUnusedColumns: function(data, headerOptions)

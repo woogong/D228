@@ -24,6 +24,10 @@ var feeListManager = {
             this1.openMembershipFeePopup();
         });
 
+        $("#btn_excel_register").on("click", function () {
+            this1.openExcelRegisterPopup();
+        });
+
         $("#btn_excel").on("click", function () {
             this1.doExcelDownload();
         });
@@ -36,6 +40,9 @@ var feeListManager = {
             this1.removeMembershipFeeData();
         });
 
+        $("#modal_excel_register .btn_excel_save").on("click", function() {
+            this1.saveMembershipFeeByExcel();
+        });
     },
 
     readList: function(callback) {
@@ -131,6 +138,11 @@ var feeListManager = {
     prepareInputValidation: function()
     {
         $("#form_register").checkInputValidation({
+            errorLayerClasses: "",
+            errorLayerParent: "div.form-group",
+        });
+
+        $("#form_excel_register").checkInputValidation({
             errorLayerClasses: "",
             errorLayerParent: "div.form-group",
         });
@@ -249,6 +261,40 @@ var feeListManager = {
                 return list[i];
             }
         }
+    },
+
+    openExcelRegisterPopup: function()
+    {
+        $("#modal_excel_register").modal("show");
+    },
+
+    saveMembershipFeeByExcel: function()
+    {
+        var form = $("#form_excel_register");
+
+        var this1 = this;
+        var option = {
+            dataType: "JSON",
+            
+            success: function(response) {
+                if (response.resultCode == "Success")
+                {
+                    $.alert("회비납부", "회비 납부 일괄 등록을 완료하였습니다.", function() {
+                        location.reload();
+                    });
+                }
+                else
+                {
+                    $.alert("회비납부", "회비 납부 일괄 등록에 실패하였습니다. " + (response.failMessage ? response.failMessage : ""));
+                }
+            },
+            
+            beforeSubmit: function() {
+                return form.checkInputValidation("isValid");
+            },
+        };
+        
+        form.ajaxSubmit(option);
     },
 
     doExcelDownload: function()

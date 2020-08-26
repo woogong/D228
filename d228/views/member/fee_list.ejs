@@ -38,6 +38,7 @@
                     </div>
                     <div class="col-8" style="text-align: right;">
                         <button class="btn btn-primary btn-sm" id="btn_register">회비납부등록</button>
+                        <button class="btn btn-primary btn-sm" id="btn_excel_register">일괄등록</button>
                         <button class="btn btn-secondary btn-sm" id="btn_excel">엑셀 다운로드</button>
                     </div>
                 </div>
@@ -162,6 +163,31 @@
 		</div>
 	</div>
 
+    <div class="modal fade bd-example-modal-sm" id="modal_excel_register" tabindex="-1" role="dialog" aria-labelledby="modal_excel_register_label" aria-hidden="true">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal_excel_register_label">회부 납부 일괄 등록</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="form_excel_register" method="post" action="/rest/file/membership_fee_register.do" enctype="multipart/form-data">
+						<div class="form-group">
+							<label for="file_excel" class="col-form-label">엑셀 파일</label>
+							<input type="file" name="excelFile" class="form-control-file user_input_check" id="file_excel" accept=".xlsx" data-rule="required">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+					<button type="button" class="btn btn-primary btn_excel_save">등록</button>
+				</div>
+			</div>
+		</div>
+    </div>
+ 
     <%- include ("../include/footer.ejs") %>
 
 </body>
