@@ -89,6 +89,8 @@ const MEMBERSHIP_HEADER = {
 	'school': {enable: true, name: '학교', width: 20},
 	'grade': {enable: true, name: '학년', width: 5},
 	'class1': {enable: true, name: '반', width: 5},
+	'merit_seq': {enable: false},
+	'merit_id': {enable: false},
 };
 
 const MEMBERSHIP_FEE_HEADER = {

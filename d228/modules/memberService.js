@@ -41,18 +41,17 @@ var api = {
 
 	getMemberList: function(params, callback) {
 		var sql = "";
-		sql += "SELECT a.*, b.fee_year  ";
+		sql += "SELECT a.*, b.fee_year, c.merit_seq, c.merit_id  ";
 		sql += "  FROM membership AS a ";
 		sql += "  LEFT JOIN (  ";
 		sql += "    	SELECT member_seq, MAX(year) AS fee_year  ";
 		sql += "	      FROM membership_fee  ";
 		sql += "    	 GROUP BY member_seq  ";
 		sql += "      ) AS b ON a.member_seq = b.member_seq  ";
+		sql += "  LEFT JOIN merit AS c ON a.member_seq = c.member_seq	";
 
 		if (params)
 		{
-			console.log("params", params);
-
 			sql += " WHERE a.member_seq > 0 ";
 
 			if (params.query && params.query.length > 0)
@@ -60,10 +59,6 @@ var api = {
 				sql += "  AND (member_id LIKE '%" + params.query + "%' ";
 				sql += "       OR name LIKE '%" + params.query + "%' ";
 				sql += "       OR job LIKE '%" + params.query + "%') ";
-				sql += "       ";
-				sql += "       ";
-				sql += "       ";
-				sql += "       ";
 			}
 
 			if (params.feeFilter)
@@ -77,6 +72,19 @@ var api = {
 				else if (params.feeFilter == 'N')
 				{
 					sql += "  AND (fee_year != " + thisYear + " OR fee_year IS NULL) ";
+
+				}
+			}
+
+			if (params.meritFilter)
+			{
+				if (params.meritFilter == 'Y')
+				{
+					sql += "  AND c.merit_seq IS NOT NULL ";
+				}
+				else if (params.meritFilter == 'N')
+				{
+					sql += "  AND c.merit_seq IS NULL ";
 
 				}
 			}

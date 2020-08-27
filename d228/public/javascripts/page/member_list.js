@@ -21,6 +21,11 @@ var memberListManager = {
             setTimeout(function() {memberListManager.applyFilter();}, 10);
         });
 
+        $("#btn_merit_filter").on("click", function() {
+            memberListManager.changeMeritFilterStatus();
+            setTimeout(function() {memberListManager.applyFilter();}, 10);
+        });
+
         $("#btn_excel_register").on("click", function () {
             memberListManager.openExcelRegisterPopup();
         });
@@ -116,7 +121,35 @@ var memberListManager = {
             }
         }
 
-        $("#div_member_list").list("setData", {list:filtered2});
+        var filtered3;
+        var meritStatus = $("#btn_merit_filter").attr("data_status");
+        if ("A" == meritStatus)
+        {
+            filtered3 = filtered2;
+        }
+        else
+        {
+            filtered3 = [];
+            for (var i in filtered2)
+            {
+                if ("Y" == meritStatus)
+                {
+                    if (filtered2[i].merit_seq)
+                    {
+                        filtered3.push(filtered2[i]);
+                    }
+                }
+                else
+                {
+                    if (!filtered2[i].merit_seq)
+                    {
+                        filtered3.push(filtered2[i]);
+                    }
+                }
+            }
+        }
+
+        $("#div_member_list").list("setData", {list:filtered3});
     },
 
     applyQuery: function(data, fields, query)
@@ -154,11 +187,34 @@ var memberListManager = {
         }
     },
 
+    changeMeritFilterStatus: function()
+    {
+        var btn = $("#btn_merit_filter");
+        var status = btn.attr("data_status");
+
+        if ("A" == status)
+        {
+            btn.html("유공자 - 등록");
+            btn.attr("data_status", "Y");
+        }
+        else if ("Y" == status)
+        {
+            btn.html("유공자 - 미등록");
+            btn.attr("data_status", "N");
+        }
+        else if ("N" == status)
+        {
+            btn.html("유공자 - 전체");
+            btn.attr("data_status", "A");
+        }
+    },
+
     doExcelDownload: function()
     {
         var params = {
             query: $("input[name='query']").val(),
             feeFilter: $("#btn_membership_fee").attr("data_status"),
+            meritFilter: $("#btn_merit_filter").attr("data_status"),
         };
 
         location.href = "/rest/excel/membership_list.do?" + $.param(params);
