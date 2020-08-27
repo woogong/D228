@@ -27,7 +27,8 @@
             
             if (fnClose)
             {
-                this.alertLayer.one("hidden.bs.modal", function() {
+                this.alertLayer.off("hidden.bs.modal");
+                this.alertLayer.on("hidden.bs.modal", function() {
                     fnClose();
                 });
             }
@@ -67,7 +68,8 @@
             var this1 = this;
             if (fnOk)
             {
-                this.confirmLayer.find(".btn_ok").one("click", function() {
+                this.confirmLayer.find(".btn_ok").off("click");
+                this.confirmLayer.find(".btn_ok").on("click", function() {
                     this1.hideConfirmModal();
                     fnOk();
                 });
@@ -75,7 +77,8 @@
 
             if (fnCancel)
             {
-                this.confirmLayer.find(".btn_cancel").one("click", function() {
+                this.confirmLayer.find(".btn_cancel").off("click");
+                this.confirmLayer.find(".btn_cancel").on("click", function() {
                     this1.hideConfirmModal();
                     fnCancel();
                 });
