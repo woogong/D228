@@ -63,6 +63,7 @@ CREATE TABLE merit1
 );
 
 ALTER TABLE merit1 ADD CONSTRAINT fk_merit_member_seq
-	FOREIGN KEY (member_seq) REFERENCES membership(member_seq);
+	FOREIGN KEY (member_seq) REFERENCES membership(member_seq)
+	ON DELETE SET NULL;
 
 

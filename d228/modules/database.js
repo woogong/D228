@@ -10,6 +10,72 @@ var pool = mysql.createPool({
 
 var database = {
     
+    executeQueryAsync: function(query)
+    {
+        return new Promise(function(resolve, reject) {
+            pool.getConnection((err, connection) => {
+                if (err)
+                {
+                    if (err.code === 'PROTOCOL_CONNECTION_LOST')
+                    {
+                        console.error("Database connection was closed.");
+                    }
+                    else if (err.code === 'ER_CON_COUNT_ERROR') 
+                    {
+                        console.error('Database has too many connections.')
+                    }
+                    else if (err.code === 'ECONNREFUSED') {
+                        console.error('Database connection was refused.')
+                    }
+    
+                    if (callbackFail)
+                    {
+                        reject(err);
+                    }
+                }
+            
+                if (connection) 
+                {
+                    connection.query(query, function(err, result, fields) {
+                        connection.release();
+
+                        if (err)
+                        {
+                            var msg = "서버 오류입니다. 개발자에게 문의하세요.";
+    
+                            if (err.code == 'ER_BAD_FIELD_ERROR')
+                            {
+                                msg = "SQL 오류입니다. 개발자에게 문의하세요.";
+                            }
+    
+                            console.log("error ", err);
+                            //throw err;
+                            if (callbackFail)
+                            {
+                                reject(msg);
+                            }
+                            return;
+                        }
+    
+                        var str = JSON.stringify(result);
+                        var json = JSON.parse(str);
+
+                        if (json.length == 1)
+                        {
+                            resolve(json[0]);
+                        }
+                        else
+                        {
+                            resolve(json);
+                        }
+                    });
+                }
+        
+                return;
+            });
+        });
+    },
+
     executeQuery: function(query, callback, callbackFail) {
         pool.getConnection((err, connection) => {
             if (err)

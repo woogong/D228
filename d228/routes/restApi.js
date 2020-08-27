@@ -94,12 +94,42 @@ router.post('/member/read.do', function (req, res, next) {
 });
 
 router.post('/member/register.do', function (req, res, next) {
+	if (req.body.memberId)
+	{
+		registerMembership(req, res);
+	}
+	else
+	{
+		memberService.execute("getNewMemberId", null, function(result) {
+			req.body.memberId = result.max_id - 0 + 1;
+			registerMembership(req, res);
+		});
+	}
+});
+
+router.post('/member/register_by_merit.do', async function (req, res, next) {
+	
+	var result = await memberService.executeAsync("getNewMemberId", null);
+	var memberId = result.max_id - 0 + 1;
+
+	console.log("register_by_merit", memberId);
+
+	req.body.memberId = memberId;
+	await memberService.executeAsync("registerMember", req.body);
+
+	await memberService.executeAsync("updateMeritMemberSeq", req.body);
+
+	res.json({ 'resultCode': "Success" });
+});
+
+function registerMembership(req, res)
+{
 	memberService.execute("registerMember", req.body, function (result) {
 		res.json({ 'resultCode': "Success" });
 	}, function(err) {
 		res.json({'resultCode': "Fail", 'failMessage': err});
 	});
-});
+}
 
 router.post('/member/update.do', function (req, res, next) {
 	memberService.execute("updateMember", req.body, function (result) {

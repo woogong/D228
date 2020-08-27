@@ -5,8 +5,9 @@ var api = {
 	execute: function(job, params, callback, callbackFail) {
 		try
 		{
-			var query = eval("this." + job)(params);
-			console.log(query);
+			console.log("[memberService.execute]", job);
+			var query = eval("api." + job)(params);
+			console.log("[SQL]", query);
 			database.executeQuery(query, callback, callbackFail);
 		}
 		catch (exception)
@@ -14,6 +15,28 @@ var api = {
 			console.log(exception);
 			callbackFail(exception);
 		}
+	},
+
+	executeAsync: function(job, params)
+	{
+		console.log("[memberService.executeAsync]", job);
+		return new Promise(function(resolve, reject) {
+			try
+			{
+				var query = eval("api." + job)(params);
+				console.log("[SQL]", query);
+				database.executeQuery(query, function(result) {
+					resolve(result);
+				}, function(error) {
+					reject(error)
+				});
+			}
+			catch (exception)
+			{
+				console.log(exception);
+				reject(exception);
+			}
+		});
 	},
 
 	getMemberList: function(params, callback) {
@@ -116,7 +139,7 @@ var api = {
 		sql += "  ('" + (params.memberId ? params.memberId : "") + "', ";
 		sql += "   '" + (params.name ? params.name : "") + "', ";
 		sql += "    " + (params.birthday != "" ? "'" + params.birthday + "'" : "null") + ", ";
-		sql += "   '" + (params.registerDate ? params.registerDate : "") + "', ";
+		sql += "    " + (params.registerDate ? "'" + params.registerDate + "'" : "now()") + ", ";
 		sql += "   '" + (params.zipcode ? params.zipcode : "") + "', ";
 		sql += "   '" + (params.address ? params.address : "") + "', ";
 		sql += "   '" + (params.phoneHome ? params.phoneHome : "") + "', ";
@@ -499,6 +522,16 @@ var api = {
 		sql += "	note = '" + params.note + "', ";
 		sql += "	school = '" + params.school + "', ";
 		sql += "	graduate = '" + params.graduate + "' ";
+		sql += " WHERE merit_seq = " + params.meritSeq + " ";
+
+		return sql;
+	},
+
+	updateMeritMemberSeq: function(params, callback)
+	{
+		var sql = "";
+		sql += "UPDATE merit SET ";
+		sql += "	member_seq = (SELECT member_seq FROM membership WHERE member_id = '" + params.memberId + "') ";
 		sql += " WHERE merit_seq = " + params.meritSeq + " ";
 
 		return sql;

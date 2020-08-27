@@ -12,8 +12,8 @@ $(document).ready(function() {
 
     meritManager.setEventHandlers();
     meritManager.setMeritSeq(urlParams.merit_seq);
-});
 
+});
 
 var meritManager = {
 
@@ -27,6 +27,10 @@ var meritManager = {
 
         $("#btn_remove").on("click", function() {
             this1.removeMerit();
+        });
+
+        $("#btn_membership").on("click", function() {
+            this1.registerMembership();
         });
     },
 
@@ -56,6 +60,8 @@ var meritManager = {
         items.each(function() {
             meritManager.showDetailData($(this));
         });
+
+        this.initMembershipRegisterButton();
     },
 
     showDetailData: function(element)
@@ -95,6 +101,55 @@ var meritManager = {
                 }
             });
         });
+    },
+
+    registerMembership: function()
+    {
+        var this1 = this;
+
+        $.confirm("회원등록", "'" + this.data.name + "' 유공자를 회원으로 등록하시겠습니까?", function() {
+            this1._saveMembership();
+        });
+    },
+
+    _saveMembership: function()
+    {
+        var params = {
+            name: this.data.name,
+            birthday: this.data.birthday,
+            zipcode: this.data.zipcode,
+            address: this.data.address,
+            phoneHome: this.data.phone_home,
+            phoneMobile: this.data.phone_mobile,
+            email: this.data.email,
+            memberType: "C",
+            meritSeq: this.data.merit_seq
+        };
+
+        $.post("/rest/member/register_by_merit.do", params, function(response) {
+            var this1 = this;
+            if (response.resultCode == "Success")
+            {
+                $.alert("회원등록", "'" + this.data.name + "' 유공자를 회원으로 등록했습니다.");
+                location.reload();
+            }
+            else
+            {
+                $.alert("회원등록", "회원 등록에 실패하였습니다. " + (response.failMessage ? response.failMessage : ""));
+            }
+        })
+    },
+
+    initMembershipRegisterButton: function()
+    {
+        if (this.data.member_seq)
+        {
+            $("#btn_membership").hide();
+        }
+        else
+        {
+            $("#btn_membership").show();
+        }
     },
 
     formatDate: function(value)
