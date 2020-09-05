@@ -44,6 +44,21 @@ function formatMembershipType(value)
 	return result;
 }
 
+function formatRegularYn(value)
+{
+	var result;
+	if ("Y" == value)
+	{
+		result = "정회원";
+	}
+	else
+	{
+		result = "준회원";
+	}
+
+	return result;
+}
+
 function formatGraduate(value)
 {
 	if (value == 0)
@@ -76,6 +91,7 @@ const MEMBERSHIP_HEADER = {
 	'birthday': {enable: true, name: '생년월일', width: 15, fnFormat: formatDate},
 	'register_date': {enable: true, name: '가입일', width: 15, fnFormat: formatDate},
 	'member_type': {enable: true, name: '회원종류', width: 10, fnFormat: formatMembershipType},
+	'regular_yn': {enable: true, name: '정회원', width: 10, fnFormat: formatRegularYn},
 	'zipcode': {enable: true, name: '우편번호', width: 10},
 	'address': {enable: true, name: '주소', width: 60},
 	'phone_home': {enable: true, name: '전화번호', width: 15},
@@ -130,6 +146,7 @@ const MEMBERSHIP_FIELDS = {
 	'생년월일': 'birthday',
 	'가입일': 'register_date',
 	'회원종류': 'member_type',
+	'정회원': 'regular_yn',
 	'전화번호': 'phone_home',
 	'핸드폰': 'phone_mobile',
 	'우편번호': 'zipcode',

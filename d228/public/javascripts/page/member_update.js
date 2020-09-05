@@ -125,7 +125,7 @@ var memberManager = {
 
         value = value || "";
 
-        if (element[0].tagName == "INPUT" && element.attr("type") == "radio")
+        if (element[0].tagName == "INPUT" && (element.attr("type") == "radio" || element.attr("type") == "checkbox"))
         {
             if (element.val() == value)
             {

@@ -296,6 +296,53 @@ router.get('/merit/new_id.do', function (req, res, next) {
 	});
 });
 
+router.get('/admin/list.do', function (req, res, next) {
+	memberService.execute("getAdminList", null, function (result) {
+		if (Array.isArray(result))
+		{
+			res.json(result);
+		}
+		else
+		{
+			var array = [];
+			if (result)
+			{
+				array.push(result);
+			}
+
+			res.json(array);
+		}
+	});
+});
+
+router.post('/admin/read.do', function (req, res, next) {
+	memberService.execute("getAdmin", req.body, function (result) {
+		res.json(result);
+	});
+});
+
+router.post('/admin/register.do', function (req, res, next) {
+	memberService.execute("registerAdmin", req.body, function (result) {
+		res.json({ 'resultCode': "Success" });
+	}, function(err) {
+		res.json({'resultCode': "Fail", 'failMessage': err});
+	});
+});
+
+router.post('/admin/update.do', function (req, res, next) {
+	memberService.execute("updateAdmin", req.body, function (result) {
+		res.json({ 'resultCode': "Success" });
+	}, function(err) {
+		res.json({'resultCode': "Fail", 'failMessage': err});
+	});
+});
+
+router.post('/admin/admin_id_unique.do', function (req, res, next) {
+	memberService.execute("getCountOfAdmins", req.body, function (result) {
+		res.send((result.countAdmins == 0) ? "true" : "false");
+	});
+});
+
 router.post('/file/membership_register.do', upload.single("excelFile"), function (req, res, next) {
 	var result = doBatchRegister(req, excelService.buildMembershipData, "registerMemberBatch");
 	res.json(result);

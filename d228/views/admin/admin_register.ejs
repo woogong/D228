@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include ("../include/declare.ejs") %>
+
+    <style>
+
+    </style>
+
+    <script src="/js/jquery.form.min.js"></script>
+    <script src="/js/woogong/form_checker.js"></script>
+    <script src="/js/page/admin_register.js"></script>
+
+</head>
+
+<body>
+
+    <%- include ("../include/header.ejs") %>
+
+    <div class="container">
+        <div class="panel-heading">
+            <h3 class="panel-title">관리자등록</h3>
+        </div>
+
+        <form id="the_form" method="post" action="/rest/admin/register.do">
+            <div class="form-group row">
+                <label for="txt_id" class="col-sm-2 col-form-label">아이디</label>
+                <div class="col-sm-3">
+                    <input type="text" name="adminId" class="form-control user_input_check" id="txt_id" data-rule="required" data-rule-api="/rest/admin/admin_id_unique.do" data-rule-api-message="이미 사용중인 아이디입니다." autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="txt_name" class="col-sm-2 col-form-label">성명</label>
+                <div class="col-sm-3">
+                    <input type="text" name="name" class="form-control user_input_check" data-rule="required" id="txt_name" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="txt_name" class="col-sm-2 col-form-label">비밀번호</label>
+                <div class="col-sm-3">
+                    <input type="text" name="password" class="form-control user_input_check" data-rule="required" id="txt_password" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group row">
+                <legend class="col-form-label col-sm-2 pt-0">등급</legend>
+                <div class="col-sm-10">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="grade" id="rd_grade_3" value="3" checked="checked">
+                        <label class="form-check-label" for="rd_grade_3">일반관리자</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="grade" id="rd_grade_5" value="5">
+                        <label class="form-check-label" for="rd_grade_5">최고관리자</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12" style="text-align: center;">
+                    <button id="btn_save" type="submit" class="btn btn-primary">등록</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <%- include ("../include/footer.ejs") %>
+
+</body>
+
+</html>

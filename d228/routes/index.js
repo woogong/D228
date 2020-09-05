@@ -42,17 +42,17 @@ router.get("/merit/update", function (req, res, next) {
   res.render("merit/merit_update");
 });
 
-
-/*
-router.get("/merit/register", function (req, res, next) {
-  res.render("merit/register");
+router.get("/admin/list", function (req, res, next) {
+  res.render("admin/admin_list");
 });
-*/
 
-/*
-router.get('/include/header', function(req, res, next) {
-  res.render('include/header');
+router.get("/admin/register", function (req, res, next) {
+  res.render("admin/admin_register");
 });
-*/
+
+router.get("/admin/update", function (req, res, next) {
+  res.render("admin/admin_update");
+});
+
 
 module.exports = router;

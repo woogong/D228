@@ -56,9 +56,9 @@ var api = {
 
 			if (params.query && params.query.length > 0)
 			{
-				sql += "  AND (member_id LIKE '%" + params.query + "%' ";
-				sql += "       OR name LIKE '%" + params.query + "%' ";
-				sql += "       OR job LIKE '%" + params.query + "%') ";
+				sql += "  AND (a.member_id LIKE '%" + params.query + "%' ";
+				sql += "       OR a.name LIKE '%" + params.query + "%' ";
+				sql += "       OR a.job LIKE '%" + params.query + "%') ";
 			}
 
 			if (params.feeFilter)
@@ -106,7 +106,8 @@ var api = {
 		sql += "	a.birthday, "; 
 		sql += "	a.zipcode, "; 
 		sql += "	a.address, "; 
-		sql += "	a.email "; 
+		sql += "	a.email, "; 
+		sql += "	a.regular_yn "; 
 		sql += "  FROM membership AS a ";
 		sql += " ORDER BY a.name  ";
 
@@ -142,6 +143,7 @@ var api = {
 		sql += "   school, ";
 		sql += "   grade, ";
 		sql += "   class1, ";
+		sql += "   regular_yn, ";
 		sql += "   member_type) ";
 		sql += "VALUES  ";
 		sql += "  ('" + (params.memberId ? params.memberId : "") + "', ";
@@ -160,6 +162,7 @@ var api = {
 		sql += "   '" + (params.school ? params.school : "") + "', ";
 		sql += "   '" + (params.grade ? params.grade : "") + "', ";
 		sql += "   '" + (params.class1 ? params.class1 : "") + "', ";
+		sql += "   '" + (params.regularYn ? params.regularYn : "N") + "', ";
 		sql += "   '" + (params.memberType ? params.memberType : "C") + "') ";
 
 		return sql;
@@ -167,25 +170,33 @@ var api = {
 
 	registerMemberBatch: function(params, callback) {
 		var member_type = "";
+		var regular_yn = "N";
+
 		if (params.member_type)
 		{
-			if (params.member_type == "P")
+			if (params.member_type == "후원회원")
 			{
-				member_type = "후원회원";
+				member_type = "P";
 			}
-			else if (params.member_type == "F")
+			else if (params.member_type == "가족회원")
 			{
-				member_type = "가족회원";
+				member_type = "F";
 			}
-			else if (params.member_type == "S")
+			else if (params.member_type == "학생회원")
 			{
-				member_type = "학생회원";
+				member_type = "S";
 			}
 			else
 			{
-				member_type = "일반회원";
+				member_type = "M";
 			}
 		}
+
+		if (params.regular_yn == '정회원')
+		{
+			regular_yn = 'Y';
+		}
+		console.log(params, regular_yn);
 
 		var sql = "";
 		sql += "INSERT INTO membership  ";
@@ -205,6 +216,7 @@ var api = {
 		sql += "   school, ";
 		sql += "   grade, ";
 		sql += "   class1, ";
+		sql += "   regular_yn, ";
 		sql += "   member_type) ";
 		sql += "VALUES  ";
 		sql += "  ('" + (params.member_id ? params.member_id : "") + "', ";
@@ -223,6 +235,7 @@ var api = {
 		sql += "   '" + (params.school ? params.school : "") + "', ";
 		sql += "   '" + (params.grade ? params.grade : "") + "', ";
 		sql += "   '" + (params.class1 ? params.class1 : "") + "', ";
+		sql += "   '" + regular_yn + "', ";
 		sql += "   '" + member_type + "') ";
 
 		return sql;
@@ -242,12 +255,13 @@ var api = {
 		sql += "	phone_mobile = '" + params.phoneMobile + "', ";
 		sql += "	email = '" + params.email + "', ";
 		sql += "	job = '" + params.job + "', ";
-		sql += "	introducer_seq = '" + params.introducer + "', ";
+		sql += "	introducer_seq = " + ((params.introducer && params.introducer != 0) ? params.introducer : null) + ", ";
 		sql += "	note = '" + params.note + "', ";
 		sql += "	gender = '" + params.gender + "', ";
 		sql += "	school = '" + params.school + "', ";
 		sql += "	grade = '" + params.grade + "', ";
 		sql += "	class1 = '" + params.class1 + "', ";
+		sql += "	regular_yn = '" + (params.regularYn ? params.regularYn : 'N') + "', ";
 		sql += "	member_type = '" + params.memberType + "' ";
 		sql += " WHERE member_seq = " + params.memberSeq + " ";
 
@@ -583,6 +597,73 @@ var api = {
 		return sql;
 	},
 
+	getAdminList: function(params, callback) {
+		var sql = "";
+		sql += "SELECT ";
+		sql += "	a.admin_seq, ";
+		sql += "	a.admin_id, ";
+		sql += "	a.name, ";
+		sql += "	a.grade, ";
+		sql += "	a.locked ";
+		sql += "  FROM admin AS a ";
+		sql += " ORDER BY a.admin_seq  ";
+
+		return sql;
+	},
+
+	getAdmin: function(params, callback) {
+		var sql = "";
+		sql += "SELECT ";
+		sql += "	a.admin_seq, ";
+		sql += "	a.admin_id, ";
+		sql += "	a.name, ";
+		sql += "	a.grade, ";
+		sql += "	a.locked ";
+		sql += "  FROM admin AS a ";
+		sql += " WHERE admin_seq = " + params.adminSeq + " ";
+
+		return sql;
+	},
+
+	registerAdmin: function(params, callback) {
+		var sql = "";
+		sql += "INSERT INTO admin  ";
+		sql += "  (admin_id, ";
+		sql += "   name, ";
+		sql += "   password, ";
+		sql += "   locked, ";
+		sql += "   grade) ";
+		sql += "VALUES  ";
+		sql += "  ('" + params.adminId + "', ";
+		sql += "   '" + params.name + "', ";
+		sql += "   '" + params.password + "', ";
+		sql += "	'N', ";
+		sql += "   '" + params.grade + "') ";
+
+		return sql;
+	},
+
+	updateAdmin: function(params, callback)
+	{
+		var sql = "";
+		sql += "UPDATE admin SET ";
+		sql += "	admin_id = '" + params.adminId + "', ";
+		sql += "	name = '" + params.name + "', ";
+		sql += "	grade = '" + params.grade + "', ";
+		sql += "	locked = '" + (params.locked ? params.locked : "N") + "' ";
+		sql += " WHERE admin_seq = " + params.adminSeq + " ";
+
+		return sql;
+	},
+
+	getCountOfAdmins: function(params, callback) {
+		var sql = "";
+		sql += "SELECT COUNT(*) AS countAdmins  ";
+		sql += "  FROM admin AS a ";
+		sql += " where a.admin_id = '" + params.value + "' ";
+
+		return sql;
+	},
 
 	formatDate: function(value)
 	{

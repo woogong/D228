@@ -339,6 +339,18 @@ function formatMemberType(value)
     }
 }
 
+function formatRegularYn(value)
+{
+    if ("Y" == value)
+    {
+        return "정회원";
+    }
+    else
+    {
+        return "준회원";
+    }
+}
+
 function formatGender(value)
 {
     if ("M" == value)

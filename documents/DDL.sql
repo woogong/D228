@@ -20,6 +20,7 @@ CREATE TABLE membership
 	grade			VARCHAR(30)					COMMENT '학년',
 	class1			VARCHAR(30)					COMMENT '학반',
 	member_type		CHAR(1)			NOT NULL	COMMENT '회원 구분  C - 일반회원  S - 학생회원  F - 가족회원 G - 단체회원 ',
+	regular_yn		CHAR(1)			NOT NULL	DEFAULT 'N'	COMMENT '정회원 여부 Y/N',
 	PRIMARY KEY (member_seq)
 );
 
@@ -43,7 +44,7 @@ ALTER TABLE membership_fee ADD CONSTRAINT fk_membership_fee_member_seq
 	FOREIGN KEY (member_seq) REFERENCES membership(member_seq);
 
 
-CREATE TABLE merit1
+CREATE TABLE merit
 (
 	merit_seq		INT				NOT NULL	AUTO_INCREMENT	COMMENT '유공자 일련 번호',
 	merit_id		VARCHAR(20)					COMMENT '연번',
@@ -62,8 +63,18 @@ CREATE TABLE merit1
 	PRIMARY KEY (merit_seq)
 );
 
-ALTER TABLE merit1 ADD CONSTRAINT fk_merit_member_seq
+ALTER TABLE merit ADD CONSTRAINT fk_merit_member_seq
 	FOREIGN KEY (member_seq) REFERENCES membership(member_seq)
 	ON DELETE SET NULL;
 
 
+CREATE TABLE admin
+(
+	admin_seq		INT				NOT NULL	AUTO_INCREMENT	COMMENT '관리자 일련 번호',
+	admin_id		VARCHAR(20)					COMMENT '아이디',
+	name			VARCHAR(100)	NOT NULL	COMMENT '성명',
+	password		VARCHAR(100)	NOT NULL	COMMENT '비밀번호',
+	grade			INT				NOT NULL	COMMENT '등급  3 관리자   5 최고관리자  9 운영자',
+	locked			CHAR(1)			NOT NULL	DEFAULT 'N'		COMMENT '권한 중지 여부',
+	PRIMARY KEY (admin_seq)
+);
