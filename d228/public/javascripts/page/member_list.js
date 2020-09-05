@@ -64,7 +64,7 @@ var memberListManager = {
             columns: [
                 {name: "아이디", field: "member_id", align: "center", width: "120px"},
                 {name: "성명", field: "name", align: "center", width: "100px"},
-                {name: "회비납부", field: "fee_year", align: "center", width: "100px", fnFormat: memberListManager.formatMembershipFee},
+                {name: "회비", field: "fee_year", align: "center", width: "100px", fnFormat: memberListManager.formatMembershipFee},
                 {name: "생년월일", field: "birthday", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
                 {name: "가입일", field: "register_date", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
                 {name: "휴대폰", field: "phone_mobile", align: "center", width: "120px"},

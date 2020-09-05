@@ -95,11 +95,11 @@ const MEMBERSHIP_HEADER = {
 
 const MEMBERSHIP_FEE_HEADER = {
 	'member_id': {enable: true, name: '회원아이디', width: 10},
+	'pay_date': {enable: true, name: '납부일', width: 15, fnFormat: formatDate},
 	'member_name': {enable: true, name: '성명', width: 7},
-	'year': {enable: true, name: '년도', width: 7},
 	'amount': {enable: true, name: '납부금액', width: 10},
 	'type': {enable: true, name: '납부방법', width: 10},
-	'pay_date': {enable: true, name: '납부일', width: 15, fnFormat: formatDate},
+	'year': {enable: true, name: '년도', width: 7},
 	'member_type': {enable: true, name: '회원종류', width: 10, fnFormat: formatMembershipType},
 	'note': {enable: true, name: '비고', width: 50},
 	'fee_seq': {enable: false},
