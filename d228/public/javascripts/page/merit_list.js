@@ -62,6 +62,7 @@ var meritListManager = {
                 {name: "회원아이디", field: "member_id", align: "center", width: "150px"},
                 {name: "연번", field: "merit_id", align: "center", width: "80px"},
                 {name: "성명", field: "name", align: "center", width: "100px"},
+                {name: "휴대전화", field: "phone_mobile", align: "center", width: "120px"},
                 {name: "생년월일", field: "birthday", align: "center", width: "120px", fnFormat: meritListManager.formatDate},
                 {name: "출신학교", field: "school", width: "150px"},
                 {name: "기수", field: "graduate", width: "120px", align: "center"}
