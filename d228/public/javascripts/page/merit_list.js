@@ -18,6 +18,11 @@ var meritListManager = {
             setTimeout(function() {meritListManager.applyFilter();}, 10);
         });
 
+        $("#btn_membership_filter").on("click", function() {
+            meritListManager.changeMemberFilterStatus();
+            setTimeout(function() {meritListManager.applyFilter();}, 10);
+        });
+
         $("#btn_excel").on("click", function () {
             this1.doExcelDownload();
         });
@@ -84,35 +89,37 @@ var meritListManager = {
             }
         }
 
-        var filtered2;
-        var feeStatus = $("#btn_membership_fee").attr("data_status");
-        if ("A" == feeStatus)
-        {
-            filtered2 = filtered;
-        }
-        else
-        {
-            filtered2 = [];
-            for (var i in filtered)
+        filtered = this._applyButtonFilter($("#btn_membership_filter"), filtered, function(data, code) {
+            if ("Y" == code)
             {
-                if ("Y" == feeStatus)
-                {
-                    if (filtered[i].fee_year == gThisYear)
-                    {
-                        filtered2.push(filtered[i]);
-                    }
-                }
-                else
-                {
-                    if (filtered[i].fee_year != gThisYear)
-                    {
-                        filtered2.push(filtered[i]);
-                    }
-                }
+                return data.member_seq;
+            }
+            else if ("N" == code)
+            {
+                return !data.member_seq;
+            }
+            else
+            {
+                return true;
+            }
+        });
+
+        $("#div_member_list").list("setData", {list: filtered});
+    },
+
+    _applyButtonFilter: function(btn, list, fnValidator)
+    {
+        var result = [];
+
+        for (var i in list)
+        {
+            if (fnValidator(list[i], btn.attr("data_status")))
+            {
+                result.push(list[i]);
             }
         }
 
-        $("#div_member_list").list("setData", {list:filtered2});
+        return result;
     },
 
     applyQuery: function(data, fields, query)
@@ -184,10 +191,33 @@ var meritListManager = {
         form.ajaxSubmit(option);
     },
 
+    changeMemberFilterStatus: function()
+    {
+        var btn = $("#btn_membership_filter");
+        var status = btn.attr("data_status");
+
+        if ("A" == status)
+        {
+            btn.html("회원여부 - 회원");
+            btn.attr("data_status", "Y");
+        }
+        else if ("Y" == status)
+        {
+            btn.html("회원여부 - 비회원");
+            btn.attr("data_status", "N");
+        }
+        else if ("N" == status)
+        {
+            btn.html("회원여부 - 전체");
+            btn.attr("data_status", "A");
+        }
+    },
+
     doExcelDownload: function()
     {
         var params = {
-            query: $("input[name='query']").val()
+            query: $("input[name='query']").val(),
+            membershipFilter: $("#btn_membership_filter").attr("data_status"),
         };
 
         location.href = "/rest/excel/merit_list.do?" + $.param(params);

@@ -414,6 +414,18 @@ var api = {
 				sql += "        OR a.note LIKE '%" + params.query + "%' ";
 				sql += "        OR b.member_id LIKE '%" + params.query + "%') ";
 			}
+
+			if (params.membershipFilter)
+			{
+				if (params.membershipFilter == 'Y')
+				{
+					sql += "  AND a.member_seq IS NOT NULL ";
+				}
+				else if (params.membershipFilter == 'N')
+				{
+					sql += "  AND a.member_seq IS NULL ";
+				}
+			}
 		}
 
 		sql += " ORDER BY a.merit_seq  ";

@@ -68,7 +68,7 @@ var memberListManager = {
                 {name: "생년월일", field: "birthday", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
                 {name: "가입일", field: "register_date", align: "center", width: "120px", fnFormat: memberListManager.formatDate},
                 {name: "휴대폰", field: "phone_mobile", align: "center", width: "120px"},
-                {name: "이메일", field: "email", width: "120px"},
+                {name: "비고", field: "note", width: "300px"},
             ],
             keyField: "member_seq",
             rowLink: "detail"
