@@ -625,6 +625,21 @@ var api = {
 		return sql;
 	},
 
+	getAdminById: function(params, callback) {
+		var sql = "";
+		sql += "SELECT ";
+		sql += "	a.admin_seq, ";
+		sql += "	a.admin_id, ";
+		sql += "	a.name, ";
+		sql += "	a.password, ";
+		sql += "	a.grade, ";
+		sql += "	a.locked ";
+		sql += "  FROM admin AS a ";
+		sql += " WHERE admin_id = '" + params.username + "' ";
+
+		return sql;
+	},
+
 	registerAdmin: function(params, callback) {
 		var sql = "";
 		sql += "INSERT INTO admin  ";

@@ -153,9 +153,42 @@
     {
         var message = errorMessage || element.attr("data-guide-message");
 
+        var guideElement = this.getGuideMessageElement(element);
+
         if (message)
         {
-            var guideElement = this.getGuideMessageElement(element);
+        	if (guideElement)
+        	{
+        		guideElement.html(message);
+            	
+                guideElement.removeClass("text-muted");
+                guideElement.removeClass("text-danger");
+
+                if (errorMessage)
+                {
+                    guideElement.addClass("text-danger");
+                }
+                else
+                {
+                    guideElement.addClass("text-muted");
+                }
+                
+                guideElement.show();
+        	}
+        }
+        else
+        {
+        	if (guideElement)
+        	{
+        		guideElement.html("");
+        		
+        		guideElement.hide();
+        	}
+        }
+
+        /*
+        if (message)
+        {
             guideElement.find(".message_element").html(message);
 
             guideElement.find(".message_element").removeClass("text-muted");
@@ -172,16 +205,23 @@
         }
         else
         {
-            var guideElement = element.closest(this.options.errorLayerParent).find(".guide_element");
+            //var guideElement = element.closest(this.options.errorLayerParent).find(".guide_element");
             if (guideElement)
             {
                 guideElement.find(".message_element").html("");
             }
         }
+        */
     };
 
     FormChecker.prototype.getGuideMessageElement = function(element)
     {
+        var elementId = element.attr("aria-describedby");
+    	if (elementId)
+    	{
+    		return $("#" + elementId);
+    	}
+
         var guideElement = element.closest(this.options.errorLayerParent).find(".guide_element");
 
         if (guideElement.length == 0)
@@ -189,7 +229,7 @@
             guideElement = this.makeGuideElement(element);
         }
 
-        return guideElement;
+        return guideElement.find(".message_element");
     };
 
     FormChecker.prototype.makeGuideElement = function(element)

@@ -1,10 +1,49 @@
+<!-- 로그인 영역 -->
+<div id="popup_login" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">로그인</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form_login" name="loginForm" method="post" action="/rest/admin/login.do">
+                    <div class="form-group">
+                        <label for="txt_email">ID(이메일)</label>
+                        <input type="text" name="username" class="form-control user_input_check" id="txt_id"
+                            aria-describedby="txt_id_help" data-rule="required">
+                        <small id="txt_id_help" class="form-text text-muted" style="display: none;"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="txt_password">비밀번호</label>
+                        <input type="password" name="password" class="form-control user_input_check" id="txt_password"
+                            aria-describedby="txt_password_help" data-rule="required">
+                        <small id="txt_password_help" class="form-text text-muted" style="display: none;"></small>
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="chk_remember_me">
+                        <label class="form-check-label" for="chk_remember_me">ID 기억</label>
+                    </div>
+                    <button id="btn_login" type="button" class="btn btn-primary">로그인</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span>아이디/비밀번호 찾기</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- Footer -->
 <footer class="page-footer font-small blue" style="margin-top: 5rem;">
-  <!-- Copyright -->
-  <div class="footer-copyright text-center py-3">
-    © 2020 Copyright:
-    <a href="http://228.or.kr/front/" target="_blank"> 228민주운동기념사업회</a>
-  </div>
-  <!-- Copyright -->
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">
+        © 2020 Copyright:
+        <a href="http://228.or.kr/front/" target="_blank"> 228민주운동기념사업회</a>
+    </div>
+    <!-- Copyright -->
 </footer>
 <!-- Footer -->

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include ("../include/declare.ejs") %>
+
+    <script src="/js/jquery.form.min.js"></script>
+    <script src="/js/jquery.cookie.js"></script>
+    <script src="/js/woogong/form_checker.js"></script>
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            display: -ms-flexbox;
+            display: -webkit-box;
+            display: flex;
+            -ms-flex-align: center;
+            -ms-flex-pack: center;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            justify-content: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+        }
+
+        .form-signin {
+            width: 100%;
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+
+        .form-signin .checkbox {
+            font-weight: 400;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
+
+
+</head>
+
+<body class="text-center">
+
+    <form id="form_login" class="form-signin" method="post" action="/rest/admin/login.do">
+        <img class="mb-4" src="/images/logo.png" alt="">
+        <h1 class="h3 mb-3 font-weight-normal">로그인</h1>
+        <label for="txt_id" class="sr-only">아이디</label>
+        <input type="text" id="txt_id" name="username" class="form-control" placeholder="아이디" required autofocus>
+        <label for="txt_password" class="sr-only">Password</label>
+        <input type="password" id="txt_password" name="password" class="form-control" placeholder="비밀번호" required>
+        <div class="checkbox mb-3">
+          <label>
+            <input type="checkbox" name="remember" value="remember-me"> 아이디 기억 </label>
+        </div>
+        <button id="btn_login" class="btn btn-lg btn-primary btn-block" type="button">로그인</button>
+        <!-- <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p> -->
+      </form>
+
+</body>
+
+<script>
+
+    $(document).ready(() => {
+        var rememberCookie = $.cookie('d228_id_rember');
+        if (rememberCookie)
+        {
+            $("#txt_id").val(rememberCookie);
+            $("[name=remember]").attr("checked", true);
+        }
+    });
+
+</script>
+
+</html>

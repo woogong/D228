@@ -343,6 +343,50 @@ router.post('/admin/admin_id_unique.do', function (req, res, next) {
 	});
 });
 
+router.post('/admin/login.do', function (req, res, next) {
+	memberService.execute("getAdminById", req.body, function (result) {
+		var result1 = {};
+		
+		if (result && (result.locked != 'Y') && (result.password == req.body.password))
+		{
+			delete result.password;
+			result1.resultCode = "Success"
+
+			var httpSession = req.session;
+			httpSession.user = result;
+		}
+		else
+		{
+			result1.resultCode = "Fail"
+		}
+
+		if (req.body.remember)
+		{
+			res.cookie('d228_id_remember', req.body.username, {maxAge: 30 * 24 * 60 * 60 * 1000});
+		}
+		else
+		{
+			res.clearCookie('d228_id_remember');
+		}
+		
+		res.json(result1);
+	});
+});
+
+router.post('/admin/logout.do', function (req, res, next) {
+	delete req.session.user;
+	
+	res.json({
+		resultCode: "Success"
+	});
+});
+
+router.post('/admin/user_info.do', function (req, res, next) {
+	var user = req.session.user;
+	var result = {user: user};
+	res.json(result);
+});
+
 router.post('/file/membership_register.do', upload.single("excelFile"), function (req, res, next) {
 	var result = doBatchRegister(req, excelService.buildMembershipData, "registerMemberBatch");
 	res.json(result);
