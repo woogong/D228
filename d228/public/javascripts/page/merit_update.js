@@ -251,7 +251,7 @@ var meritManager = {
 
         this.combo.empty();
 
-        this.makeOption({name: "없음", merit_seq: 0});
+        this.makeOption({name: "없음", member_seq: 0});
         for (var i in list)
         {
             this.makeOption(list[i]);

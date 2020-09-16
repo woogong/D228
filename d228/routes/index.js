@@ -9,6 +9,10 @@ router.get("/login", function (req, res, next) {
   res.render("admin/login");
 });
 
+router.get("/summary", function (req, res, next) {
+  res.render("common/summary");
+});
+
 router.get("/member/list", function (req, res, next) {
   var session = req.session;
   console.log("[session]", session);

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include ("../include/declare.ejs") %>
+    
+    <script src="/js/woogong/list_table.js"></script>
+    <script src="/js/woogong/form_checker.js"></script>
+    <script src="/js/page/summary.js"></script>
+
+	<style>
+		span {
+			text-align: left;
+			margin-top: 1.2rem;
+			color: gray;
+		}
+
+		.left {
+			width: 610px;
+			display: flex;
+		}
+
+		td {
+			width: 150px;
+			padding: 0.8rem;
+			font-size: 15px;
+		}
+
+		dl {
+			margin-bottom: 0.1rem;
+			padding-bottom: 0;
+		}
+
+		dd {
+			margin-bottom: 0.2rem;
+		}
+
+        table th, td {
+            text-align: center;
+        }
+
+	</style>
+ 
+</head>
+
+<body>
+
+    <%- include ("../include/header.ejs") %>
+ 
+    <div class="container">
+        <div class="row">
+            <div class="panel panel-primary" style="width: 100%;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">기본 정보</h3>
+                </div>
+            </div>
+        </div>
+
+        <dl class="row"  style="margin-top: 1rem; border-top: 1px solid #DDD; padding-top: 0.5rem;">
+			<dd class="col-sm-4">
+				<dl class="row">
+					<dt class="col-sm-6">전체 회원</dt>
+					<dd class="col-sm-6" id="count_member">0명</dd>
+				</dl>
+			</dd>
+			<dd class="col-sm-4">
+				<dl class="row">
+					<dt class="col-sm-6">정회원</dt>
+					<dd class="col-sm-6" id="count_regular">0명</dd>
+				</dl>
+			</dd>
+			<dd class="col-sm-4">
+				<dl class="row">
+					<dt class="col-sm-6">회비납부</dt>
+					<dd class="col-sm-6" id="count_fee">0명</dd>
+				</dl>
+			</dd>
+        </dl>
+        
+        <dl class="row">
+			<dd class="col-sm-4">
+				<dl class="row">
+					<dt class="col-sm-6">유공자</dt>
+					<dd class="col-sm-6" id="count_merit">0명</dd>
+				</dl>
+			</dd>
+			<dd class="col-sm-4">
+				<dl class="row">
+					<dt class="col-sm-6">유공자 회원</dt>
+					<dd class="col-sm-6" id="count_merit_member">0명</dd>
+				</dl>
+			</dd>
+		</dl>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-top: 5px;">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#list_member_register_data" role="tab" aria-controls="home"
+                    aria-selected="true">월별 회원 가입 현황</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#list_birthday_data" role="tab" aria-controls="profile"
+                    aria-selected="false">출생 연도별 회원 현황</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="list_member_register_data" role="tabpanel" aria-labelledby="home-tab">
+                <table class="table" id="table_register_date_data">
+                    <thead>
+                        <tr class="filters">
+                            <th>년도</th>
+                            <th>1월</th>
+                            <th>2월</th>
+                            <th>3월</th>
+                            <th>4월</th>
+                            <th>5월</th>
+                            <th>6월</th>
+                            <th>7월</th>
+                            <th>8월</th>
+                            <th>9월</th>
+                            <th>10월</th>
+                            <th>11월</th>
+                            <th>12월</th>
+                            <th>합계</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">2012년</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                            <td class="text-center">0</td>
+                        </tr>
+                    </tbody>               
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="list_birthday_data" role="tabpanel" aria-labelledby="profile-tab">
+                <table class="table" id="table_birthday_data">
+                    <thead>
+                        <tr class="filters">
+                            <th>년도</th>
+                            <th>회원수</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">2012년</td>
+                            <td class="text-center">0</td>
+                        </tr>
+                    </tbody>               
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <%- include ("../include/footer.ejs") %>
+
+</body>
+
+</html>

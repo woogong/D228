@@ -400,6 +400,7 @@ var api = {
 		sql += "	a.member_seq, ";
 		sql += "	a.name, ";
 		sql += "	a.birthday, ";
+		sql += "	a.jumin_no, ";
 		sql += "	a.school, ";
 		sql += "	a.graduate, ";
 		sql += "	a.register_date, ";
@@ -442,7 +443,7 @@ var api = {
 			}
 		}
 
-		sql += " ORDER BY a.merit_seq  ";
+		sql += " ORDER BY a.merit_id  ";
 
 		return sql;
 	},
@@ -455,6 +456,7 @@ var api = {
 		sql += "	a.member_seq, ";
 		sql += "	a.name, ";
 		sql += "	a.birthday, ";
+		sql += "	a.jumin_no, ";
 		sql += "	a.school, ";
 		sql += "	a.graduate, ";
 		sql += "	a.register_date, ";
@@ -479,6 +481,7 @@ var api = {
 		sql += "   member_seq, ";
 		sql += "   name, ";
 		sql += "   birthday, ";
+		sql += "   jumin_no, ";
 		sql += "   school, ";
 		sql += "   graduate, ";
 		sql += "   zipcode, ";
@@ -493,6 +496,7 @@ var api = {
 		sql += "   " + ((params.memberSeq != 0) ? params.memberSeq : null) + ", ";
 		sql += "   '" + params.name + "', ";
 		sql += "   " + (params.birthday != "" ? "'" + params.birthday + "'" : "null") + ", ";
+		sql += "   '" + params.juminNo + "', ";
 		sql += "   '" + params.school + "', ";
 		sql += "   '" + params.graduate + "', ";
 		sql += "   '" + params.zipcode + "', ";
@@ -513,6 +517,7 @@ var api = {
 		sql += "   member_seq, ";
 		sql += "   name, ";
 		sql += "   birthday, ";
+		sql += "   jumin_no, ";
 		sql += "   school, ";
 		sql += "   graduate, ";
 		sql += "   zipcode, ";
@@ -527,6 +532,7 @@ var api = {
 		sql += "    (SELECT member_seq FROM membership WHERE member_id = '" + params.member_id + "'), ";
 		sql += "   '" + params.name + "', ";
 		sql += "   " + (params.birthday != "" ? "'" + params.birthday + "'" : "null") + ", ";
+		sql += "   '" + params.jumin_no + "', ";
 		sql += "   '" + params.school + "', ";
 		sql += "   '" + params.graduate + "', ";
 		sql += "   '" + params.zipcode + "', ";
@@ -544,10 +550,11 @@ var api = {
 	{
 		var sql = "";
 		sql += "UPDATE merit SET ";
-		sql += "	member_seq = '" + params.memberSeq + "', ";
+		sql += "	member_seq = " + ((params.memberSeq != 0) ? params.memberSeq : null)  + ", ";
 		sql += "	merit_id = '" + params.meritId + "', ";
 		sql += "	name = '" + params.name + "', ";
 		sql += "	birthday = '" + params.birthday + "', ";
+		sql += "	jumin_no = '" + params.juminNo + "', ";
 		sql += "	zipcode = '" + params.zipcode + "', ";
 		sql += "	address = '" + params.address + "', ";
 		sql += "	phone_home = '" + params.phoneHome + "', ";

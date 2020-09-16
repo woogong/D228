@@ -81,7 +81,7 @@ var gLoginManager = {
             success: function(response) {
                 if (response.resultCode == "Success")
                 {
-                    location.href = "/member/list";
+                    location.href = "/summary";
                 }
                 else
                 {

@@ -208,8 +208,14 @@
                         var strA = this1.getShownString(column, a) || ((this1.sortAscendent) ? "zzzz" : "0000");
                         var strB = this1.getShownString(column, b) || ((this1.sortAscendent) ? "zzzz" : "0000");
 
-                        strA = strA.replace(/,/gi, "") - 0;
-                        strB = strB.replace(/,/gi, "") - 0;
+                        if (typeof(strA) == "string")
+                        {
+                            strA = strA.replace(/,/gi, "") - 0;
+                        }
+                        if (typeof(strA) == "string")
+                        {
+                            strB = strB.replace(/,/gi, "") - 0;
+                        }
                         
                         var value = (strA >= strB) ? 1 : -1;
                         value *= (this1.sortAscendent) ? 1 : -1;
